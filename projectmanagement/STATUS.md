@@ -1,51 +1,21 @@
-# S04 — development repair checkpoint
+# Current execution state
 
-Date: 2026-09-08. Role: medium development. Phase: **READY_FOR_QA — READY FOR LIGHT QA (repair retest)**. S04-QA-01 repaired; independent confirmation pending.
+Updated 2026-09-08 by medium developer. **S04: READY_FOR_QA — READY FOR LIGHT QA (repair 02); not accepted.**
 
-Catalog now requires every supported lesson and dispatches its trusted validator against the supplied steps. Grouping validates complete supplied frame state against the fixed named teaching steps, with property-order-independent comparisons. Both unchanged QA failures now pass; adjacent mutation and valid-copy regressions added. Focused run: 23 passed in 2.60s. First adjacent-test failure exposed a property-order-sensitive older comparison; repaired and preserved in evidence/S04/development-repair/focused.log. No semantic contract expansion.
+| Field | Current value |
+| --- | --- |
+| Next actor | Independent light QA |
+| Active scope | S04 repair 02 retest, then lead acceptance review |
+| Candidate | `8aa89e66fac7c3b17c9c1e8b127a7f3549e73ad2` on `codex/s04-group-by-foundation` |
+| Predecessor | Reviewed `17aaee9`, documentation HEAD `193043a`; M3 base retained |
+| Repair | S04-LEAD-01: actual supplied JOIN steps and authored data validated for shape, reveal bounds/progression, source/emitted-result focus and named-step reveal/focus/outcome |
+| Developer checks | Frozen install; typecheck; 76 frames; 73 unit tests (12.48s); build (561ms); 17 isolated-preview browser tests (1.1m), all PASS |
+| Visual review | 10 fresh JOIN desktop/390px screenshots opened; JS changed, CSS hash unchanged |
+| Remaining | Independent retest and lead acceptance; neither claimed by development |
+| Next prompt | Current repair-02 section in reports/S04-development.md; retest requirements in sprints/S04-repair-02.md |
 
-Candidate: `17aaee96e98a43b02160c415e289e9c9380d559e` on `codex/s04-group-by-foundation`, descendant of the M3 base and reviewed `7ff24f0`. Both original QA test files are committed unchanged (hashes match QA evidence).
+R1 and R2 completed continuously. Original QA tests and lead tests preserved; 24 adjacent developer cases added. No failures during these repair runs; previous lead failures remain in evidence/S04/lead-review/. Gate ran in the shared checkout with strict run-owned preview4194, no server reuse, retries, skips or timeout changes. No serious/critical Axe or page-overflow assertion failures. Later checkpoint commit contains documentation/evidence only.
 
-Frozen install PASS (328ms); full `pnpm run check` PASS: typecheck, 4 lessons/8 variants/76 frames, 44 unit tests (14.07s), production build (516ms), 17 browser tests (1.1m), no skips/retries, zero serious/critical Axe or page-overflow assertion failures. Run-owned strict preview4194. Gate ran in the original shared checkout; not a clean-checkout claim. Built JS/CSS hashes exactly match QA's reviewed artifacts. No new manual screenshot review in this validation-only repair.
+Preserve local modified AGENTS.md and untracked planning, lead/QA reports and evidence. No merge, push, deployment or S05. The old report's raw-test-hash equality claim is corrected by the lead provenance note: LF/CRLF-normalized source is identical, raw checkout hashes differ. Do not repeat the raw equality claim across checkouts.
 
-Next action: independent light QA retests S04-QA-01 and the candidate gate, updates backlog/ledger/QA report, then recommends the next role. See the current repair section and retest prompt in reports/S04-development.md. Historical QA failures remain preserved below and in evidence. No production changes after the passing gate; later commit is documentation/evidence only. Preserved planning files and modified AGENTS.md remain local. No S05 or lead acceptance.
-
-## Prior independent QA checkpoint
-
-Date: 2026-09-08. Role: independent light QA/backlog. Phase: **DEV_REWORK — RETURN TO DEVELOPMENT**. Next actor: medium developer.
-
-Reviewed branch `codex/s04-group-by-foundation`, HEAD `7ff24f0e0d7c5c9629fcddc19328bfbe63566d53`, base `42886919fa2b574a499b249989eb9da0f649173d`. Production unchanged during QA. Detached test checkout retained at `D:/PROJ/Fluent2_S04_QA_7ff24f0`; two uncommitted QA test additions are copied to both workspaces, identified by hashes in the evidence.
-
-Frozen install PASS; typecheck PASS; current 76-frame validation PASS; final unit gate **29 passed / 2 failed**; production build PASS; **17 production browser tests passed**, zero serious/critical Axe or page-overflow assertion failures. **32 screenshots actually reviewed**. Full gate is FAIL, not ready for lead review.
-
-One ordinary repair batch: **S04-QA-01 (P2)**. Catalog validation accepts an omitted supported lesson and grouping members referencing a nonexistent order. Exact reproductions are the last two tests in `tests/s04-independent.test.ts`; keep them failing until the production validator is repaired. Details, commands, limits, screenshots and exact repair prompt: [S04 QA report](reports/S04-qa.md). Evidence: [independent QA](evidence/S04/independent-qa/). Backlog and ledger updated.
-
-Preserve unrelated modified AGENTS.md and untracked planning files. QA changes only tests, report/evidence and management state. No commit, push, merge, deployment or production repair performed. No test processes remain running. Resume the entire medium repair batch from the report, then return to independent QA. Lead acceptance remains NOT_RUN; do not begin S05.
-
-## Historical development checkpoint (superseded by QA above)
-
-Date: 2026-09-08. Role: medium development. State: **READY FOR LIGHT QA — S04**.
-
-## User-requested context-stop remark
-
-Stopped at the end of S04 P4 because the user requested a safe conversation boundary. P1–P4 development is complete. No production edits or test processes remain in progress. The next conversation starts independent light QA, not architecture discussion or repeated development. No S05, new conversation or background task was started.
-
-## Exact resume state
-
-- Repository: D:\PROJ\Fluent2_Microsoft_J
-- Branch: codex/s04-group-by-foundation
-- Base: 42886919fa2b574a499b249989eb9da0f649173d
-- Passing integrated gate: 335e0ee77422998e326b79cb16320be35bc2aaa7
-- Review candidate: 17bfeb3f62195bcb7b542fe656f0d31a889d576f. Only five malformed-ID test cases were added after the full gate; the affected six-test file passed again. Production unchanged.
-- A later documentation/evidence commit records this checkpoint; inspect git log for that commit.
-- Frozen install, typecheck, 76-frame validation, 27 unit tests, build and 15 browser tests passed. Run-owned preview4194, no server reuse. Eight final grouping screenshots inspected.
-
-Read [development report](reports/S04-development.md), [ledger](BRANCH_AND_TEST_LEDGER.md), and [evidence](evidence/S04/). The report contains the exact next-conversation prompt.
-
-## Preserved local work
-
-Starting changes were modified AGENTS.md and an untracked projectmanagement planning tree. Preserved; do not discard them or assume another checkout contains them. The updated ledger remains untracked with the planning documents, audit and templates. STATUS, development report and S04 evidence are committed separately. No push, merge or deployment occurred.
-
-## Next action
-
-Verify branch/revision/dirty changes, then independently verify A1–A8, run the production gate, inspect desktop/390px and keyboard behavior, and write reports/S04-qa.md. A9 (independent QA then lead review) remains NOT_RUN. The sprint plan's original READY_FOR_DEV heading is historical; this STATUS is the current execution checkpoint. Do not start S05 or claim acceptance.
+History: STATUS_HISTORY_S04.md, development/QA/lead reports and branch/test ledger. The existing lead REWORK decision is historical input to this repair; independent QA and lead own the next verdict.

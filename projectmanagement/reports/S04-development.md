@@ -1,5 +1,39 @@
 # S04 development report
 
+## Current repair 02 handoff — S04-LEAD-01
+
+2026-09-08. Medium developer. **READY FOR LIGHT QA — repair 02 retest**. Both repair passes completed continuously. Candidate `8aa89e66fac7c3b17c9c1e8b127a7f3549e73ad2` on `codex/s04-group-by-foundation`, predecessor `193043a` (reviewed application/test candidate `17aaee9`), M3 base `42886919fa2b574a499b249989eb9da0f649173d`. Later documentation/evidence checkpoint makes no production/test changes. S04 remains unaccepted; no S05 work.
+
+JOIN now has an explicit JoinStep contract retaining ID, caption, reveal, focus and outcome. Trusted catalog dispatch passes the actual supplied steps into validateJoinLesson; a supplied no-op callback cannot bypass it. Runtime validation also occurs before prepareJoinInput, with no recursive input/validation dependency. Both authored and supplied traces are checked against the selected source tables and freshly compiled JOIN result.
+
+Independent domain checks require integer reveal counts in range, monotonic progression, initial zero, final complete output, valid source/result focus, and output focus only on emitted rows. Named-step expectations derive Alice/Bob/Chloé contributions from the result and enforce the original reveal/focus sequence and mode-specific Bob outcome. Required semantic fields are checked at the runtime boundary; captions are not parsed for meaning. The expected semantic state is separate from the mutable authored step objects, so malformed authored data cannot certify itself. Grouping retains full-frame validation; sort/workflow remain descriptors plus trusted spec validators. No JOIN-core, renderer, CSS, dependency or upstream-source changes. Touched catalog dispatch was formatted and unused imports removed.
+
+Original QA/repair tests are unchanged relative to17aaee9. Lead's five tests are committed unchanged, including the negative authored-data mutation and reordered-properties positive case. Added24 adjacent cases: four explicit reveal/outcome oracles,19 mutation cases run through direct and catalog validation in all four variants, and an authored bounded-reveal/focus mutation that also proves render-input rejection. Expected reveal sequences are hand specified: LEFT unique0/0/2/2/3/3/4; INNER unique0/0/2/2/2/2/3; LEFT duplicate0/0/4/4/5/5/6; INNER duplicate0/0/4/4/4/4/5.
+
+| Run | Command/result | Evidence |
+| --- | --- | --- |
+| S04-R2-01 | `pnpm exec vitest run tests/s04-lead-validation.test.ts tests/proofs.test.ts tests/catalog-repair.test.ts tests/s04-independent.test.ts`: exit0,32 passed,3.85s | [Initial focused](../evidence/S04/development-repair-02/focused-initial.log) |
+| S04-R2-02 | `pnpm exec vitest run tests/join-validation-repair.test.ts tests/s04-lead-validation.test.ts tests/proofs.test.ts tests/catalog-repair.test.ts tests/s04-independent.test.ts`: exit0,56 passed,5.03s | [Complete focused batch](../evidence/S04/development-repair-02/focused-final.log) |
+| S04-R2-03 | `pnpm run typecheck`: exit0 | [Typecheck](../evidence/S04/development-repair-02/typecheck.log) |
+| S04-R2-04 | `pnpm install --frozen-lockfile`: exit0,357ms; lockfile unchanged | [Install](../evidence/S04/development-repair-02/install.log) |
+| S04-R2-05 | `pnpm run check` at8aa89e6: exit0; typecheck,4 lessons/8 variants/76 frames,73 units/10 files (12.48s),build561ms,17 browser tests (1.1m) | [Full gate](../evidence/S04/development-repair-02/check.log) |
+
+No repair-run failures; original lead failures remain preserved. Windows/shared original checkout, Node24.19.0/pnpm11.19.0 via documented runtime PATH. Strict run-owned production preview4194; no server reuse, retries, skips, assertion weakening or timeout increases. Browser checks include keyboard, desktop/390px, reduced motion, Axe and overflow; zero serious/critical Axe or page-overflow assertion failures. This is not a clean-checkout run; independent QA should run the exact candidate in isolation.
+
+Build JS changed to index-BmY3DOmK.js (396.97kB/115.46kB gzip), SHA256 E13275EA03E099CDB886F0A711309118E9D55CFB754A34948A6A66D1E431165B. CSS remains index-DKAcxEgP.css, SHA2569241ACCF435946E5363791149E90488AAF9AF98D5AAFB32CC50ADD9C620ECEC3. Thus no claim of byte-identical JS. [Hashes](../evidence/S04/development-repair-02/hashes.txt).
+
+Freshly opened10 screenshots from this gate, preserved under [browser evidence](../evidence/S04/development-repair-02/browser/): `{1440,390}-{duplicate-keys,inner-join,table.join}.png` and `qa-{1440,390}-join-{initial,intermediate}.png`. Reviewed LEFT unique initial, resolve-bob and final, INNER unique final, LEFT duplicate final. Observed correct0/3/4/3/6 row counts, Bob NULL/excluded text, contributor highlighting, readable phone HTML, local diagram panning and visible keyboard focus. No new visual regression established. Full-page focus/skip-link capture artifacts remain as described by prior QA; no new native screen-reader or exhaustive visual review. Duplicate INNER has browser assertions but no fresh dedicated screenshot inspection.
+
+Provenance correction for prior reports: tests in LF/CRLF checkouts have identical normalized source, not equal raw byte hashes; see lead-review/provenance.md. Git diff confirms original QA test source unchanged. Current raw file hashes are evidence for this checkout only. Preserve historical reports/logs rather than rewriting their prior outcomes. Existing modified AGENTS.md and untracked planning/QA/lead work remain local; ledger updated without staging that unrelated tree. No merge, push, deployment or acceptance.
+
+Exact light retest prompt:
+
+```text
+Act as the independent light QA and backlog model for S04 repair 02. Read AGENTS.md, projectmanagement/README.md, STATUS.md, TEAM_WORKFLOW.md, TEST_STRATEGY.md, sprints/S04-repair-02.md, reports/S04-lead-review.md and the current repair-02 section of reports/S04-development.md. Independently verify candidate 8aa89e66fac7c3b17c9c1e8b127a7f3549e73ad2 against the explicit reveal oracles and R1 invariants: all four variants, unknown focus and invalid outcome in each, missing fields, un-emitted output focus, and malformed authored data. Preserve original QA and lead regressions. Run the normal frozen-install/release gate in an isolated exact-candidate checkout and record source/test revisions. JS changed, so inspect affected desktop/390px states and state the actual screenshot scope; compare recorded asset hashes. Correct prior raw-test-hash equality wording: normalized LF/CRLF source is identical, raw checkout hashes differ. Maintain STATUS.md, BACKLOG.md, BRANCH_AND_TEST_LEDGER.md and reports/S04-qa.md; preserve all historical failures. Return ordinary defects as one batch or escalate material contract conflicts. If all blocking checks pass, say READY FOR LEAD REVIEW and give the lead prompt. Do not change production semantics, accept S04 or start S05.
+```
+
+## Historical repair 01 handoff
+
 ## Current repair handoff — S04-QA-01
 
 2026-09-08. Medium development. **READY FOR LIGHT QA — repair retest**. This section supersedes the original candidate/results below; historical evidence remains intact.

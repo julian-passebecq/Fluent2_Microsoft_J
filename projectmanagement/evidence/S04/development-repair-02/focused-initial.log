@@ -1,0 +1,9 @@
+
+ RUN  v5.0.0 D:/PROJ/Fluent2_Microsoft_J
+
+
+ Test Files  4 passed (4)
+      Tests  32 passed (32)
+   Start at  23:23:03
+   Duration  3.85s (environment 51%, setup 21%, import 12%, transform 10%, tests 6%)
+
