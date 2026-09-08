@@ -1,5 +1,4 @@
-import { compileLoopFrame, compileTableJoin, compileWorkflowRunFrame, resolveExplanationStep, validateWorkflowSpec,
-  type LoopFrame, type LoopSceneSpec, type TableJoinSpec, type WorkflowSpec } from '../core';
+import { compileTableJoin, resolveExplanationStep, type TableJoinSpec } from '../core';
 
 export const join: TableJoinSpec = {
   id: 'customer-orders', joinType: 'left', leftKey: 'customer', rightKey: 'customer',
@@ -53,18 +52,84 @@ function buildJoinLesson(mode: JoinMode, duplicate = false) {
   return mode === 'left' ? { spec: join, result: joined, steps: joinSteps } : { spec: innerJoin, result: innerJoined, steps: innerJoinSteps };
 }
 export const joinStepIds = ['select-alice', 'match-alice', 'emit-alice', 'select-bob', 'resolve-bob', 'match-chloe', 'emit-chloe'] as const;
+export interface JoinStep {
+  id: typeof joinStepIds[number];
+  caption: string;
+  reveal: number;
+  focus: readonly string[];
+  outcome: string;
+}
 export function joinLesson(mode: JoinMode, duplicate = false) {
   const lesson = buildJoinLesson(mode, duplicate);
-  return { ...lesson, steps: lesson.steps.map((step, i) => ({ ...step, id: joinStepIds[i],
+  return { ...lesson, steps: lesson.steps.map((step, i): JoinStep => ({ ...step, id: joinStepIds[i],
     outcome: ['resolve-bob', 'match-chloe', 'emit-chloe'].includes(joinStepIds[i]) ? (mode === 'left' ? 'Bob preserved with NULL' : 'Bob excluded: no matching order') : '',
   })) };
 }
+
+function assertJoinStep(value: unknown): asserts value is JoinStep {
+  if (typeof value !== 'object' || value === null ||
+      !('id' in value) || !joinStepIds.some(id => id === value.id) ||
+      !('caption' in value) || typeof value.caption !== 'string' || !value.caption.trim() ||
+      !('reveal' in value) || typeof value.reveal !== 'number' || !Number.isInteger(value.reveal) ||
+      !('focus' in value) || !Array.isArray(value.focus) || !value.focus.every(id => typeof id === 'string') ||
+      !('outcome' in value) || typeof value.outcome !== 'string') {
+    throw Error('Invalid JOIN semantic fields');
+  }
+}
+
+// Validate the fixed teaching sequence independently of the authored step objects.
+// In particular, comparing a mutated authored fixture with itself is not a gate.
+export function validateJoinLesson(mode: JoinMode, duplicate = false, supplied?: readonly unknown[]) {
+  const lesson = joinLesson(mode, duplicate);
+  const { spec } = lesson;
+  const result = compileTableJoin(spec);
+  const aliceSources = duplicate ? ['left:C1', 'left:C1-copy'] : ['left:C1'];
+  const aliceRows = result.rows.filter(row => row.leftRowId === 'C1' || row.leftRowId === 'C1-copy').map(row => row.id);
+  const bobRows = result.rows.filter(row => row.leftRowId === 'C2').map(row => row.id);
+  const chloeRows = result.rows.filter(row => row.leftRowId === 'C3').map(row => row.id);
+  const afterBob = aliceRows.length + bobRows.length;
+  const expected: Record<JoinStep['id'], { reveal: number; focus: readonly string[]; outcome: string }> = {
+    'select-alice': { reveal: 0, focus: aliceSources, outcome: '' },
+    'match-alice': { reveal: 0, focus: [...aliceSources, 'right:O1', 'right:O2'], outcome: '' },
+    'emit-alice': { reveal: aliceRows.length, focus: duplicate ? [...aliceRows, ...aliceSources] : [...aliceSources, 'right:O1', 'right:O2', ...aliceRows], outcome: '' },
+    'select-bob': { reveal: aliceRows.length, focus: ['left:C2'], outcome: '' },
+    'resolve-bob': { reveal: afterBob, focus: ['left:C2', ...bobRows], outcome: mode === 'left' ? 'Bob preserved with NULL' : 'Bob excluded: no matching order' },
+    'match-chloe': { reveal: afterBob, focus: ['left:C3', 'right:O3'], outcome: mode === 'left' ? 'Bob preserved with NULL' : 'Bob excluded: no matching order' },
+    'emit-chloe': { reveal: result.rows.length, focus: duplicate ? result.rowOrder : ['left:C3', 'right:O3', ...chloeRows], outcome: mode === 'left' ? 'Bob preserved with NULL' : 'Bob excluded: no matching order' },
+  };
+  const sourceIds = new Set([...spec.left.rows.map(row => `left:${row.id}`), ...spec.right.rows.map(row => `right:${row.id}`)]);
+  const resultIds = new Set(result.rowOrder);
+  for (const steps of supplied ? [lesson.steps, supplied] : [lesson.steps]) {
+    if (steps.length !== joinStepIds.length) throw Error('Incomplete JOIN trace');
+    let prior = 0;
+    steps.forEach((step, index) => {
+      assertJoinStep(step);
+      if (step.id !== joinStepIds[index]) throw Error('JOIN step alignment mismatch');
+      if (step.reveal < 0 || step.reveal > result.rows.length || step.reveal < prior ||
+          (index === 0 && step.reveal !== 0) || (index === steps.length - 1 && step.reveal !== result.rows.length)) {
+        throw Error('Invalid JOIN reveal progression');
+      }
+      const emitted = new Set(result.rowOrder.slice(0, step.reveal));
+      if (step.focus.some(id => !sourceIds.has(id) && (!resultIds.has(id) || !emitted.has(id)))) {
+        throw Error('Unknown or un-emitted JOIN focus reference');
+      }
+      const state = expected[step.id];
+      if (step.reveal !== state.reveal || step.outcome !== state.outcome ||
+          step.focus.length !== state.focus.length || step.focus.some((id, i) => id !== state.focus[i])) {
+        throw Error('Incorrect JOIN teaching state');
+      }
+      prior = step.reveal;
+    });
+  }
+}
+
 export function compileJoinFrame(index: number, mode: JoinMode, duplicate: boolean) {
   const lesson = joinLesson(mode, duplicate);
+  validateJoinLesson(mode, duplicate, lesson.steps);
   const step = lesson.steps[index];
   if (!step) throw new Error('Unknown join step');
   const rows = lesson.result.rows.slice(0, step.reveal);
-  return { ...lesson, step, rows, input: joinInput(index, mode, duplicate),
+  return { ...lesson, step, rows, input: prepareJoinInput(lesson, index, mode),
     represented: new Set(rows.map(row => row.leftRowId)).size,
     activeLeft: lesson.spec.left.rows.filter(row => step.focus.includes(`left:${row.id}`)).map(row => row.id),
     activeRight: lesson.spec.right.rows.filter(row => step.focus.includes(`right:${row.id}`)).map(row => row.id),
@@ -72,8 +137,13 @@ export function compileJoinFrame(index: number, mode: JoinMode, duplicate: boole
   };
 }
 export function joinInput(index: number, mode: JoinMode = 'left', duplicate = false) {
-  const { spec, result, steps } = joinLesson(mode, duplicate);
+  const lesson = joinLesson(mode, duplicate);
+  validateJoinLesson(mode, duplicate, lesson.steps);
+  return prepareJoinInput(lesson, index, mode);
+}
+function prepareJoinInput({ spec, result, steps }: ReturnType<typeof joinLesson>, index: number, mode: JoinMode) {
   const step = steps[index];
+  if (!step) throw Error('Unknown join step');
   const track = { steps: steps.map((s, i) => ({ id: `join-${i}`, title: mode === 'left' ? 'Match keys → preserve every customer' : 'Match keys → keep matching pairs only', focus: { entityIds: s.focus } })) };
   return { spec, result, revealCount: step.reveal, title: 'Customers → matching orders → result',
     description: `${step.reveal} output rows · solid links: customer · dashed links: order`,
