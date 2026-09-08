@@ -1,0 +1,7 @@
+$ pnpm run typecheck && pnpm run validate && pnpm test && pnpm run build && pnpm run test:browser
+$ tsc --noEmit
+tests/runtime-contracts.test.tsx(30,21): error TS2352: Conversion of type '() => { matches: false; addEventListener: (_name: string, fn: ((event: MediaQueryListEvent) => void) | undefined) => void; removeEventListener: () => void; }' to type '((query: string) => MediaQueryList) & ((query: string) => MediaQueryList)' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+  Type '() => { matches: false; addEventListener: (_name: string, fn: ((event: MediaQueryListEvent) => void) | undefined) => void; removeEventListener: () => void; }' is not comparable to type '(query: string) => MediaQueryList'.
+    Type '{ matches: false; addEventListener: (_name: string, fn: ((event: MediaQueryListEvent) => void) | undefined) => void; removeEventListener: () => void; }' is missing the following properties from type 'MediaQueryList': media, onchange, addListener, removeListener, dispatchEvent
+[ELIFECYCLE] Command failed with exit code 1.
+[ELIFECYCLE] Command failed with exit code 1.
