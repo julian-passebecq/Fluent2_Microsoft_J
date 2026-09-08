@@ -1,4 +1,30 @@
-# Milestone 1 QA report
+# Milestone 2 QA report — current
+
+Result: **PASS**. Date: 2026-09-08. Branch: `codex/sql-visuals-m2`.
+
+Validated implementation/test content: `591ba8be7089cd135bc6be708e9a90aeae9164be`. Subsequent evidence commit changes documentation/screenshots only. Same Windows / Node 24.19.0 / pnpm 11.19.0 / Chromium 153.0.8010.12 environment as Milestone 1.
+
+| Command/check | Result |
+| --- | --- |
+| `pnpm install --frozen-lockfile` | PASS; unchanged lockfile/dependencies |
+| `pnpm run validate` | PASS; 48 frames, 3 concepts / 4 variants |
+| `pnpm test` | PASS; 16 tests in 3 files, 28.31s |
+| `pnpm run build` | PASS including strict typecheck; JS 379.70 kB / 110.52 kB gzip |
+| `pnpm run test:browser` | PASS; 5 tests, 1 minute; production preview |
+| Desktop / phone | PASS; 1440×1000 and 390×1000; original three flows plus join comparison |
+| Keyboard | PASS; native radio ArrowRight switches mode; skip link, stepping and local diagram scrolling remain covered |
+| Identity | PASS; same source/matched SVG nodes survive LEFT/INNER switching; Bob's NULL row alone disappears |
+| Playback / reduced motion | PASS; mode switch pauses and preserves index; reset retains chosen mode; reduced motion disables Play |
+| Axe | PASS; zero serious/critical issues across 16 scans (12 baseline + 4 comparison) |
+| Overflow | PASS; no page-level horizontal overflow at either viewport |
+
+Visual review: inspected `docs/qa/m2/1440-inner-join.png` and `390-inner-join.png`. INNER shows three output rows representing two customers; Bob remains in Customers but is explicitly excluded from the result. Both variants retain two Alice/order matches. Phone tables and query reflow while the SVG scrolls locally.
+
+Resolved during implementation: malformed multiline SQL string caught by typecheck and corrected before the successful production build. No new framework gaps or dependencies. Benign NO_COLOR/FORCE_COLOR warning remains. No unresolved blockers; no remote push or deployment.
+
+---
+
+# Milestone 1 QA report — historical
 
 Result: **PASS**. Date: 2026-09-08.
 
