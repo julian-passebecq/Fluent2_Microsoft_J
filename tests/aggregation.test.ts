@@ -36,6 +36,10 @@ it('G05: shuffle changes only presentation/member order; frozen inputs remain un
 it('G06: malformed inputs and overflowing sums fail',()=>{
   const s=groupingSpec('baseline');
   const bad:AggregationSpec[]=[{...s,id:''},{...s,groupColumnId:'missing'},{...s,aggregates:[{id:'customer',kind:'countRows'}]},
+    {...s,table:{...s.table,id:''}}, {...s,aggregates:[{id:'',kind:'countRows'}]},
+    {...s,table:{...s.table,columns:[{id:''},...s.table.columns]}},
+    {...s,table:{...s.table,columns:[...s.table.columns,s.table.columns[0]]}},
+    {...s,table:{...s.table,rows:[{...s.table.rows[0],id:''}]}},
     {...s,aggregates:[{id:'x',kind:'countRows'},{id:'x',kind:'countRows'}]}, {...s,aggregates:[{id:'x',kind:'sum',columnId:'missing'}]},
     {...s,table:{...s.table,rows:[s.table.rows[0],s.table.rows[0]]}}, {...s,table:{...s.table,rows:[{id:'x',values:{customer:'C1'}}]}},
     ...[NaN,Infinity,'bad'].map(amount=>({...s,table:{...s.table,rows:[{id:'x',values:{customer:'C1',amount}}]}})),
