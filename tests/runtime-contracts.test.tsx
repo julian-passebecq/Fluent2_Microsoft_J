@@ -3,7 +3,7 @@ import { afterEach, expect, it, vi } from 'vitest';
 import { FigurePlayer } from '../src/figures/react/FigurePlayer';
 import { RendererHost } from '../src/figures/react/renderer-host';
 import { createRendererRegistry } from '../src/figures/renderers/registry';
-afterEach(()=>vi.useRealTimers());
+afterEach(()=>{vi.useRealTimers();vi.unstubAllGlobals();});
 it('never invokes an empty or shrinking trace out of bounds; aligned IDs survive reordering',()=>{
   vi.useFakeTimers();const child=vi.fn((i:number)=><output>{i}</output>);
   const view=(ids:string[],alignment='a')=><FigurePlayer captions={ids} stepIds={ids} alignmentKey={alignment} playbackKey={ids.join()}>{child}</FigurePlayer>;
@@ -26,12 +26,11 @@ it('makes renderer failures explicit, recovers updates and remounts, and destroy
 });
 it('P01/P03: previous seeking cancels playback, end replay restarts, live reduced motion stops',()=>{
   vi.useFakeTimers();let change:((event:MediaQueryListEvent)=>void)|undefined;
-  const original=window.matchMedia;
-  window.matchMedia=(()=>({matches:false,addEventListener:(_name:string,fn:typeof change)=>{change=fn;},removeEventListener:()=>{}})) as typeof window.matchMedia;
+  vi.stubGlobal('matchMedia',()=>({matches:false,addEventListener:(_name:string,fn:typeof change)=>{change=fn;},removeEventListener:()=>{}}));
   const {unmount}=render(<FigurePlayer captions={['A','B','C']} stepIds={['a','b','c']}>{i=><output>{i}</output>}</FigurePlayer>);
   fireEvent.click(screen.getByRole('button',{name:'Step'}));fireEvent.click(screen.getByRole('button',{name:'Play'}));fireEvent.click(screen.getByRole('button',{name:'Previous'}));
   act(()=>vi.advanceTimersByTime(2600));expect(screen.getByRole('status')).toHaveTextContent('0');
   fireEvent.click(screen.getByRole('button',{name:'Step'}));fireEvent.click(screen.getByRole('button',{name:'Step'}));fireEvent.click(screen.getByRole('button',{name:'Play'}));expect(screen.getByRole('status')).toHaveTextContent('0');
   act(()=>change?.({matches:true} as MediaQueryListEvent));act(()=>vi.advanceTimersByTime(2600));expect(screen.getByRole('status')).toHaveTextContent('0');expect(screen.getByRole('button',{name:'Play'})).toBeDisabled();
-  unmount();expect(vi.getTimerCount()).toBe(0);window.matchMedia=original;
+  unmount();expect(vi.getTimerCount()).toBe(0);
 });
