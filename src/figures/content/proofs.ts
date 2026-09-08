@@ -24,12 +24,25 @@ export const joinSteps = [
   { caption: 'Select Chloé (C3). Order O3 has the matching customer key.', reveal: 3, focus: ['left:C3', 'right:O3'] },
   { caption: 'Emit Chloé × O3. All three customers survive in four output rows.', reveal: 4, focus: ['left:C3', 'right:O3', joined.rowOrder[3]] },
 ];
-const joinTrack = { steps: joinSteps.map((step, i) => ({ id: `join-${i}`, title: 'Match keys → preserve every customer', focus: { entityIds: step.focus } })) };
-export function joinInput(index: number) {
-  const step = joinSteps[index];
-  return { spec: join, result: joined, revealCount: step.reveal, title: 'Customers → matching orders → result',
+export type JoinMode = 'left' | 'inner';
+export const innerJoin: TableJoinSpec = { ...join, joinType: 'inner' };
+export const innerJoined = compileTableJoin(innerJoin);
+export const innerJoinSteps = joinSteps.map((step, index) => {
+  if (index === 4) return { caption: 'Exclude Bob. Without a matching order, INNER JOIN emits no row for C2.', reveal: 2, focus: ['left:C2'] };
+  if (index === 5) return { ...step, reveal: 2 };
+  if (index === 6) return { caption: 'Emit Chloé × O3. Two customers survive in three matched output rows; Bob is excluded.', reveal: 3, focus: ['left:C3', 'right:O3', innerJoined.rowOrder[2]] };
+  return step;
+});
+export function joinLesson(mode: JoinMode) {
+  return mode === 'left' ? { spec: join, result: joined, steps: joinSteps } : { spec: innerJoin, result: innerJoined, steps: innerJoinSteps };
+}
+export function joinInput(index: number, mode: JoinMode = 'left') {
+  const { spec, result, steps } = joinLesson(mode);
+  const step = steps[index];
+  const track = { steps: steps.map((s, i) => ({ id: `join-${i}`, title: mode === 'left' ? 'Match keys → preserve every customer' : 'Match keys → keep matching pairs only', focus: { entityIds: s.focus } })) };
+  return { spec, result, revealCount: step.reveal, title: 'Customers → matching orders → result',
     description: `${step.reveal} output rows · solid links: customer · dashed links: order`,
-    explanation: resolveExplanationStep(joinTrack, index, { entityIds: [...join.left.rows.map(r => `left:${r.id}`), ...join.right.rows.map(r => `right:${r.id}`), ...joined.rowOrder], frameCount: joinSteps.length }) };
+    explanation: resolveExplanationStep(track, index, { entityIds: [...spec.left.rows.map(r => `left:${r.id}`), ...spec.right.rows.map(r => `right:${r.id}`), ...result.rowOrder], frameCount: steps.length }) };
 }
 
 const values = [5, 1, 4, 2, 3];
@@ -86,7 +99,8 @@ export function validateProofs() {
   const result = validateWorkflowSpec(workflow);
   if (!result.valid) throw new Error(JSON.stringify(result.issues));
   joinSteps.forEach((_, i) => joinInput(i));
+  innerJoinSteps.forEach((_, i) => joinInput(i, 'inner'));
   bubble.frames.forEach((_, i) => compileLoopFrame(bubble, i));
   workflowCaptions.forEach((_, i) => compileWorkflowRunFrame(workflow, 'retry', i));
-  return { visuals: 3, frames: joinSteps.length + bubble.frames.length + workflowCaptions.length };
+  return { visuals: 3, variants: 4, frames: joinSteps.length + innerJoinSteps.length + bubble.frames.length + workflowCaptions.length };
 }

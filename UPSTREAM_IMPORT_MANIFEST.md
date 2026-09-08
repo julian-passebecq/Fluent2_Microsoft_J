@@ -45,6 +45,8 @@ Local files are product-owned extracted code, not a vendored checkout. The impor
 - renderer-host and SVG family imports: resolve local minimal registry/core; identity and lifecycle tests protect behavior.
 
 ## Post-import fixes
+
+Milestone 2 adds no upstream paths or dependencies. FigurePlayer's local adaptation now accepts a playbackKey: changing join mode pauses its timer while preserving the absolute frame index. Protected by tests/player.test.tsx and browser/join-comparison.spec.ts. The existing join compiler and renderer are unchanged; INNER content uses the same input tables and pair IDs.
 - packages/svg/src/renderers/graph.ts: add group role to named port groups (Axe serious issue). Protected by unit port-role assertion and browser Axe.
 - packages/svg/src/renderers/workflow.ts: learner labels Blocked/Ready/Waiting and Success dependencies replace internal status/preset copy. Semantic states are unchanged; blocked-label test added.
 

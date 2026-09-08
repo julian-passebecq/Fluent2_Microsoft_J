@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { bubble, join, joined, joinInput, joinSteps, workflow, validateProofs } from '../src/figures/content/proofs';
+import { bubble, join, joined, innerJoined, innerJoinSteps, joinInput, joinSteps, workflow, validateProofs } from '../src/figures/content/proofs';
 import { compileLoopFrame, compileWorkflowRunFrame, validateWorkflowSpec } from '../src/figures/core';
 import { LoopRenderer } from '../src/figures/renderers/renderers/loop';
 import { JoinRenderer } from '../src/figures/renderers/renderers/join';
@@ -12,6 +12,29 @@ describe('proof semantics and retained renderers', () => {
     expect(joined.rows[2].values['right.Orders.order']).toBeNull();
     expect(joined.rows[2].values['right.Orders.customer']).toBeNull();
     expect(new Set(joined.rows.map(r => r.leftRowId)).size).toBe(join.left.rows.length);
+  });
+  it('INNER excludes Bob while preserving exactly the same matched pair IDs', () => {
+    expect(innerJoined.rows.map(r => [r.leftRowId, r.rightRowId])).toEqual([['C1','O1'], ['C1','O2'], ['C3','O3']]);
+    expect(innerJoined.rowOrder).toEqual(joined.rows.filter(r => r.rightRowId !== null).map(r => r.id));
+    expect(innerJoinSteps).toHaveLength(joinSteps.length);
+    expect(innerJoinSteps[4].reveal).toBe(2);
+    expect(joinSteps[4].reveal).toBe(3);
+    expect(joinInput(4, 'inner').explanation?.step.focus.entityIds).toEqual(['left:C2']);
+  });
+  it('switches join types in place without recreating sources or surviving output pairs', () => {
+    const svg = host(), renderer = new JoinRenderer();
+    renderer.mount(svg, joinInput(6), { reducedMotion: true });
+    const source = svg.querySelector('[data-role="source-row"]');
+    const matched = [...svg.querySelectorAll('[data-role="result-row"]')].filter(n => n.getAttribute('data-null-extended') === 'false');
+    renderer.update(joinInput(6, 'inner'));
+    expect(svg.querySelector('[data-role="source-row"]')).toBe(source);
+    const surviving = [...svg.querySelectorAll('[data-role="result-row"]')];
+    expect(surviving).toHaveLength(3);
+    surviving.forEach((node,i) => expect(node).toBe(matched[i]));
+    renderer.update(joinInput(6));
+    expect(svg.querySelectorAll('[data-role="result-row"]')).toHaveLength(4);
+    expect(svg.querySelectorAll('[data-null-extended="true"]')).toHaveLength(1);
+    renderer.destroy();
   });
   it('sorts a permutation with stable IDs, comparisons and an increasing sorted suffix', () => {
     const original = bubble.items.map(i => i.id).sort();

@@ -6,6 +6,8 @@ This repository intentionally starts from a small React + Fluent shell. It is **
 
 Milestone 1 implements LEFT JOIN (7 steps), bubble sort (26 steps) and a quality-check retry DAG (8 steps). All share one deterministic player with manual stepping, 1.2-second playback and reduced-motion support.
 
+Milestone 2 adds an aligned INNER JOIN comparison. In SQL joins, select LEFT or INNER at any step: playback pauses, matching pairs keep their identity, and Bob's NULL row is preserved or excluded. Final counts are four rows/three customers for LEFT and three rows/two customers for INNER.
+
 ## Run locally
 
 Use Node >=22.12 (validated with 24.19.0) and pnpm 11.19.0.

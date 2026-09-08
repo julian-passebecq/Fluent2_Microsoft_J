@@ -11,7 +11,7 @@ for (const width of [1440, 390]) {
     await expect(page.getByRole('link', { name: 'Skip to concept' })).toBeFocused();
     await page.keyboard.press('Enter');
     await expect(page.locator('#lesson')).toBeFocused();
-    for (const [name, steps, family] of [['LEFT JOIN',7,'table.join'],['Bubble sort',26,'algorithm.loop'],['Retry & blocked downstream',8,'workflow.topology']] as const) {
+    for (const [name, steps, family] of [['SQL joins',7,'table.join'],['Bubble sort',26,'algorithm.loop'],['Retry & blocked downstream',8,'workflow.topology']] as const) {
       await page.getByRole('button', { name, exact: true }).click();
       await expect(page.locator(`[data-conceptmotion-host="${family}"] svg`)).toBeVisible();
       await expect(page.locator('[data-renderer-error]')).toHaveCount(0);
@@ -79,7 +79,7 @@ test('reduced motion and navigation cancel playback', async ({ page }) => {
   await page.getByRole('button', { name: 'Play', exact: true }).click();
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await expect(page.getByRole('button', { name: 'Play', exact: true })).toBeDisabled();
-  for (const name of ['LEFT JOIN','Bubble sort','Retry & blocked downstream']) {
+  for (const name of ['SQL joins','Bubble sort','Retry & blocked downstream']) {
     await page.getByRole('button', { name, exact: true }).click();
     await expect(page.getByRole('button', { name: 'Play', exact: true })).toBeDisabled();
     await page.getByRole('button', { name: 'Step', exact: true }).click();

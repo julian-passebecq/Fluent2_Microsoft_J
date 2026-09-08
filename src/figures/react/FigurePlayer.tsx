@@ -3,8 +3,9 @@ import { useEffect, useState, type ReactNode } from 'react';
 import { useReducedMotion } from './use-reduced-motion';
 
 /** Adapted from the audited FigurePlayer: one absolute index, one cancellable timer. */
-export function FigurePlayer({ captions, children }: {
+export function FigurePlayer({ captions, children, playbackKey }: {
   captions: readonly string[];
+  playbackKey?: string;
   children: (frame: number, reducedMotion: boolean) => ReactNode;
 }) {
   const [index, setIndex] = useState(0);
@@ -13,6 +14,7 @@ export function FigurePlayer({ captions, children }: {
   const last = captions.length - 1;
   const seek = (next: number) => { setPlaying(false); setIndex(Math.max(0, Math.min(last, next))); };
   useEffect(() => { if (reducedMotion) setPlaying(false); }, [reducedMotion]);
+  useEffect(() => { setPlaying(false); }, [playbackKey]);
   useEffect(() => {
     if (!playing || reducedMotion) return;
     if (index >= last) { setPlaying(false); return; }

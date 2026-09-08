@@ -27,3 +27,14 @@ it('keeps manual steps available with reduced motion', () => {
   fireEvent.click(screen.getByRole('button', { name: 'Step' }));
   expect(screen.getByRole('status')).toHaveTextContent('1');
 });
+it('pauses a changed comparison without resetting its current step', () => {
+  vi.useFakeTimers();
+  const { rerender } = render(<FigurePlayer captions={['Start','Left match','Done']} playbackKey="left">{i => <output>{i}</output>}</FigurePlayer>);
+  fireEvent.click(screen.getByRole('button', { name: 'Step' }));
+  fireEvent.click(screen.getByRole('button', { name: 'Play' }));
+  rerender(<FigurePlayer captions={['Start','Inner match','Done']} playbackKey="inner">{i => <output>{i}</output>}</FigurePlayer>);
+  expect(screen.getByText('Inner match')).toBeVisible();
+  expect(screen.getByRole('button', { name: 'Play' })).toBeEnabled();
+  act(() => vi.advanceTimersByTime(2400));
+  expect(screen.getByRole('status')).toHaveTextContent('1');
+});

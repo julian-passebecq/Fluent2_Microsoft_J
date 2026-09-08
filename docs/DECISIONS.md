@@ -21,3 +21,7 @@ This decision is about reducing product and repository coupling, not rejecting t
 - Retain a readable 960px diagram within a keyboard-focusable local scroll region. Reflow full SQL tables and workflow status summaries on phones. Semantic state is independent of viewport.
 - Add an explicit SVG port group role after Axe detected prohibited naming. Keep core workflow transitions unchanged; correct the fixture to remain blocked throughout retry.
 - Allow only esbuild's dependency build script in pnpm-workspace.yaml. The machine's default Node 21 is too old; use the available Node 24 runtime, keeping the repository's Node >=22.12 requirement.
+
+## 2026-09-08 — compare joins at the same semantic step
+
+Keep LEFT and INNER as aligned variants of one SQL concept. Preserve the frame index and shared join ID so matching pairs retain identity across mode switches. Pause automatic playback on a variant change to let the learner inspect the difference. Keep Bob in the source table in both modes; an INNER JOIN excludes him only from the result. No new upstream imports or renderer family.

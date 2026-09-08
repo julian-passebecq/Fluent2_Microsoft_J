@@ -7,3 +7,7 @@
 | Retry DAG | WorkflowRenderer / compileWorkflowRunFrame | 8 steps including failed Quality, blocked Publish, attempt 2, runnable and successful Publish | Fixed topology and keyed task groups; statuses and attempts change independently of geometry | Glyph plus status text and HTML summary; reduced motion allows manual states; local scroll |
 
 One shared FigurePlayer owns playback for all three. Rendering does not execute SQL, algorithms or workflows on a server. Bubble-sort fixture generation is deterministic local content authoring.
+
+## Milestone 2 — aligned join comparison
+
+INNER JOIN adds seven aligned semantic frames to the existing SQL concept, bringing validation to 48 frames across four variants. No renderer or core changes. Switching LEFT/INNER preserves the current step and existing matched pair DOM nodes; only the unmatched NULL row is removed/reinserted. Native radio controls support keyboard comparison. Visible row/customer counts, query text and Bob's outcome update together. Desktop and phone screenshots are in docs/qa/m2/.
