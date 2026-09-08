@@ -174,8 +174,8 @@ export class WorkflowRenderer extends BaseSvgRenderer<WorkflowRendererInput> {
 
     const model: GraphRenderModel = {
       explanationFocusIds: explanation?.step.focus.entityIds,
-      layoutResult: explanation ? workflowGeometry(input.spec, input.focusedGroupId) : undefined,
-      availableHeight: explanation ? surface.viewport.height - explanationPanelHeight(explanation) - 24 : undefined,
+      layoutResult: workflowGeometry(input.spec, input.focusedGroupId),
+      availableHeight: surface.viewport.height - explanationPanelHeight(explanation) - 24,
       id: input.spec.id,
       direction: input.spec.layout?.direction ?? 'lr',
       focusedGroupId: input.focusedGroupId,
@@ -197,7 +197,7 @@ export class WorkflowRenderer extends BaseSvgRenderer<WorkflowRendererInput> {
           statusLabel:
             mode === 'run' && state.attempt && state.attempt > 1
               ? `${state.status} · attempt ${state.attempt}`
-              : state.status,
+              : state.status === 'upstream_failed' ? 'blocked' : state.status === 'queued' ? 'ready' : state.status === 'pending' ? 'waiting' : state.status,
           metadata: node.metadata,
         };
       }),
@@ -227,7 +227,7 @@ export class WorkflowRenderer extends BaseSvgRenderer<WorkflowRendererInput> {
       breadcrumb,
       focusGroup
         ? `${presetLabel(preset)} / ${resolveLocalizedText(focusGroup.label, options.locale ?? 'en')}`
-        : `${presetLabel(preset)} / ALL TASKS`,
+        : 'Success dependencies',
     );
   }
 }

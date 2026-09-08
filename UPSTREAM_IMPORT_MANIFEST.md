@@ -43,3 +43,9 @@ Local files are product-owned extracted code, not a vendored checkout. The impor
 - explanation.ts: panel rendering unchanged; workflow resolution only. Tests compile every workflow frame and render all three families.
 - FigurePlayer.tsx: preserves deterministic bounded seek, 1200ms playback, pause on reduced motion and cleanup on unmount; removes metadata/export/selection and broad Figure registry dependencies. Player and browser tests protect steps, reset, end, navigation and reduced motion.
 - renderer-host and SVG family imports: resolve local minimal registry/core; identity and lifecycle tests protect behavior.
+
+## Post-import fixes
+- packages/svg/src/renderers/graph.ts: add group role to named port groups (Axe serious issue). Protected by unit port-role assertion and browser Axe.
+- packages/svg/src/renderers/workflow.ts: learner labels Blocked/Ready/Waiting and Success dependencies replace internal status/preset copy. Semantic states are unchanged; blocked-label test added.
+
+- packages/svg/src/renderers/workflow.ts: always use retained workflowGeometry, including without explanation tracks; fixes overlapping tasks in fallback layout. Browser disjoint-box and unit stable-transform assertions protect this change.

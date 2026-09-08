@@ -440,6 +440,7 @@ export function renderGraph(
             'data-port-id': port.id,
             'data-side': side,
             transform: `translate(${round(point.x)} ${round(point.y)})`,
+            role: 'group',
             'aria-label': `${port.label ?? port.id} port`,
           });
           const circle = ensureChild(portGroup, 'circle', 'circle', {

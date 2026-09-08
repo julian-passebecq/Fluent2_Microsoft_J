@@ -1,0 +1,29 @@
+import { act, fireEvent, render, screen } from '@testing-library/react';
+import { afterEach, expect, it, vi } from 'vitest';
+import { FigurePlayer } from '../src/figures/react/FigurePlayer';
+afterEach(() => { vi.useRealTimers(); vi.unstubAllGlobals(); });
+const player = () => render(<FigurePlayer captions={['Start', 'Match', 'Done']}>{i => <output>{i}</output>}</FigurePlayer>);
+it('steps, pauses, resets and stops at the end without timer leakage', () => {
+  vi.useFakeTimers();
+  const { unmount } = player();
+  fireEvent.click(screen.getByRole('button', { name: 'Step' }));
+  expect(screen.getByRole('status')).toHaveTextContent('1');
+  fireEvent.click(screen.getByRole('button', { name: 'Play' }));
+  act(() => vi.advanceTimersByTime(1200));
+  expect(screen.getByRole('button', { name: 'Step' })).toBeDisabled();
+  expect(screen.getByRole('button', { name: 'Play' })).toBeEnabled();
+  fireEvent.click(screen.getByRole('button', { name: 'Reset' }));
+  fireEvent.click(screen.getByRole('button', { name: 'Play' }));
+  fireEvent.click(screen.getByRole('button', { name: 'Pause' }));
+  act(() => vi.advanceTimersByTime(2400));
+  expect(screen.getByRole('status')).toHaveTextContent('0');
+  fireEvent.click(screen.getByRole('button', { name: 'Play' })); unmount();
+  expect(vi.getTimerCount()).toBe(0);
+});
+it('keeps manual steps available with reduced motion', () => {
+  vi.stubGlobal('matchMedia', () => ({ matches: true, addEventListener: () => {}, removeEventListener: () => {} }));
+  player();
+  expect(screen.getByRole('button', { name: 'Play' })).toBeDisabled();
+  fireEvent.click(screen.getByRole('button', { name: 'Step' }));
+  expect(screen.getByRole('status')).toHaveTextContent('1');
+});

@@ -12,7 +12,10 @@
     "typecheck": "tsc --noEmit",
     "build": "pnpm run typecheck && vite build",
     "preview": "vite preview",
-    "check": "pnpm run build"
+    "validate": "tsx scripts/validate-content.ts",
+    "test": "vitest run",
+    "test:browser": "playwright test",
+    "check": "pnpm run typecheck && pnpm run validate && pnpm test && pnpm run build && pnpm run test:browser"
   },
   "dependencies": {
     "@fluentui/react-components": "9.74.7",
@@ -20,11 +23,18 @@
     "react-dom": "19.2.8"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
+    "@playwright/test": "^1.63.0",
+    "@testing-library/jest-dom": "^7.0.1",
+    "@testing-library/react": "^16.3.3",
     "@types/node": "24.10.1",
     "@types/react": "19.2.18",
     "@types/react-dom": "19.2.7",
     "@vitejs/plugin-react": "6.1.1",
+    "jsdom": "^30.0.1",
+    "tsx": "^4.23.13",
     "typescript": "7.0.2",
-    "vite": "8.2.2"
+    "vite": "8.2.2",
+    "vitest": "^5.0.0"
   }
 }
