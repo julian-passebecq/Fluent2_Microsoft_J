@@ -46,6 +46,12 @@ Local files are product-owned extracted code, not a vendored checkout. The impor
 
 ## Post-import fixes
 
+S04 local adaptations (no new upstream paths):
+- `src/figures/react/FigurePlayer.tsx`: named-step aligned switching, unaligned reset, synchronous empty/shrink safety and timer cancellation. Covered by player/runtime-contract tests.
+- `src/figures/react/renderer-host.tsx`: explicit failure message alongside fallback, with mount/update/recovery/destroy fault-injection tests.
+- `src/figures/renderers/index.ts`: register the approved local table.group family. Its bounded compiler (`core/aggregation.ts`), authoritative frame contract and renderer are new local code, not claimed as upstream imports. The lead's scoped table/collection inspection and approved exception are in projectmanagement/sprints/S04.md.
+- Former local content proofs were split into joins/sorting/retry with a compatibility re-export. Core workflow transition behavior and table predicates are unchanged; success-dependency enforcement is a product lesson assertion.
+
 Milestone 3: no upstream imports or renderer/compiler changes. Added a duplicate-key fixture against the same TableJoinSpec contract; source and pair IDs persist between datasets. The local application supplies a taller fixed join viewport for six output rows and uses the existing playbackKey for dataset changes. Pair-completeness and browser identity tests cover the extension.
 
 Milestone 2 adds no upstream paths or dependencies. FigurePlayer's local adaptation now accepts a playbackKey: changing join mode pauses its timer while preserving the absolute frame index. Protected by tests/player.test.tsx and browser/join-comparison.spec.ts. The existing join compiler and renderer are unchanged; INNER content uses the same input tables and pair IDs.

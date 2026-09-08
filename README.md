@@ -1,5 +1,7 @@
 # Fluent2 Microsoft J — Visual IT Concepts
 
+**GROUP BY** now shows six orders becoming three customer-key groups. Step through membership and compare known amounts with NULL amounts to understand COUNT(*), COUNT(amount) and SUM. The query is illustrative; this app does not execute SQL. Browser tests use an owned production preview on port 4194 and refuse to reuse an existing listener.
+
 In SQL joins, choose **Duplicate C1 key** to see two customer records match two orders: four C1 pairs, six total LEFT rows or five INNER rows. Dataset and join-type switches preserve your step and pause playback.
 
 Clean product repository for **Datapass Visual IT Concepts**.

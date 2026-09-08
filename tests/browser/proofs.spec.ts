@@ -1,8 +1,8 @@
 import { expect, test } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 
-for (const width of [1440, 390]) {
-  test(`three primary flows, identity, keyboard, Axe and overflow at ${width}px`, async ({ page }) => {
+for (const width of [1440, 390]) for (const [name, steps, family] of [['SQL joins',7,'table.join'],['Bubble sort',26,'algorithm.loop'],['Retry & blocked downstream',8,'workflow.topology']] as const) {
+  test(`${name}: identity, keyboard, Axe and overflow at ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: 1000 });
     const errors: string[] = [];
     page.on('pageerror', error => errors.push(error.message));
@@ -11,7 +11,7 @@ for (const width of [1440, 390]) {
     await expect(page.getByRole('link', { name: 'Skip to concept' })).toBeFocused();
     await page.keyboard.press('Enter');
     await expect(page.locator('#lesson')).toBeFocused();
-    for (const [name, steps, family] of [['SQL joins',7,'table.join'],['Bubble sort',26,'algorithm.loop'],['Retry & blocked downstream',8,'workflow.topology']] as const) {
+    {
       await page.getByRole('button', { name, exact: true }).click();
       await expect(page.locator(`[data-conceptmotion-host="${family}"] svg`)).toBeVisible();
       await expect(page.locator('[data-renderer-error]')).toHaveCount(0);

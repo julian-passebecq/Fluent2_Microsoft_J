@@ -1,0 +1,31 @@
+import {expect,test} from '@playwright/test';
+import AxeBuilder from '@axe-core/playwright';
+for(const width of [1440,390])for(const nil of [false,true])test(`GROUP BY ${nil?'NULL':'known'} ${width}px`,async({page})=>{
+  const errors:string[]=[];page.on('pageerror',error=>errors.push(error.message));
+  await page.setViewportSize({width,height:1000});await page.goto('/');await page.getByRole('button',{name:'GROUP BY',exact:true}).click();
+  if(nil){await page.getByRole('radio',{name:'All amounts known',exact:true}).focus();await page.keyboard.press('ArrowRight');}
+  const axe=async()=>expect((await new AxeBuilder({page}).analyze()).violations.filter(v=>['serious','critical'].includes(v.impact??''))).toEqual([]);
+  await axe();await expect(page.locator('.group-summary')).toContainText('0 of 6');
+  await page.getByRole('button',{name:'Step',exact:true}).click();await expect(page.locator('[data-role="aggregate-group"][data-phase="pending"]')).toHaveCount(3);
+  const group=await page.locator('[data-role="aggregate-group"]').first().elementHandle();
+  for(let i=0;i<3;i++)await page.getByRole('button',{name:'Step',exact:true}).click();
+  await expect(page.locator('.group-summary')).toContainText(`Sum of known input amounts: ${nil?125:155}`);
+  await expect(page.locator('[data-role="member-link"]')).toHaveCount(6);
+  const c3=page.getByRole('table',{name:'Customer C3 · complete',exact:true});
+  await expect(c3).toContainText('O4, O5, O6');await expect(c3.getByRole('cell').last()).toHaveText(nil?'NULL':'30');
+  await page.screenshot({path:`test-results/s04-${width}-${nil?'null':'known'}-group-c3.png`,fullPage:true});
+  for(let i=0;i<2;i++)await page.getByRole('button',{name:'Step',exact:true}).click();
+  expect(await group!.evaluate(node=>node===document.querySelector('[data-role="aggregate-group"]'))).toBe(true);
+  await expect(page.locator('[data-renderer-error]')).toHaveCount(0);await axe();
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+  await page.screenshot({path:`test-results/s04-${width}-${nil?'null':'known'}-final.png`,fullPage:true});
+  await page.getByRole('radio',{name:nil?'All amounts known':'C3 amounts NULL',exact:true}).check();
+  await expect(page.locator('.figure-player')).toHaveAttribute('data-frame-index','6');
+  expect(await group!.evaluate(node=>node===document.querySelector('[data-role="aggregate-group"]'))).toBe(true);
+  await page.emulateMedia({reducedMotion:'reduce'});await expect(page.getByRole('button',{name:'Play',exact:true})).toBeDisabled();
+  await page.getByRole('button',{name:'Reset',exact:true}).click();await page.getByRole('button',{name:'Step',exact:true}).click();
+  await expect(page.locator('.figure-player')).toHaveAttribute('data-frame-index','1');
+  await page.getByRole('button',{name:'Bubble sort',exact:true}).click();await expect(page.getByRole('region',{name:'Current sorting state'})).toContainText('Current order: 5, 1, 4, 2, 3');
+  await page.getByRole('button',{name:'GROUP BY',exact:true}).click();await expect(page.locator('.figure-player')).toHaveAttribute('data-frame-index','0');
+  expect(errors).toEqual([]);
+});

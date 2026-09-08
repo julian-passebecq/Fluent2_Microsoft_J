@@ -26,4 +26,28 @@ for (let end = order.length - 1; end > 0; end--) {
 add('sorted', 'Sorted: 1, 2, 3, 4, 5. Every item kept its identity.', [], [...order]);
 export const bubble: LoopSceneSpec = { kind: 'loop', version: '1', id: 'bubble-sort', title: 'Bubble sort', items,
   codeLines: [{ id: 'pass', text: 'repeat for each unsorted pass' }, { id: 'compare', text: 'if left.value > right.value:' }, { id: 'swap', text: '    swap(left, right)' }], frames };
-
+export function validateSort(spec:LoopSceneSpec=bubble){
+  let done=new Set<string>();
+  const value=(id:string)=>Number(spec.items.find(item=>item.id===id)!.value);
+  for(let i=0;i<spec.frames.length;i++){
+    const compiled=compileLoopFrame(spec,i),frame=compiled.frame;
+    if([...done].some(id=>!frame.doneItemIds?.includes(id)))throw Error('Sorted suffix regressed');
+    done=new Set(frame.doneItemIds??[]);
+    const suffix=compiled.itemOrder.slice(compiled.itemOrder.length-done.size);
+    if(suffix.some((id,k)=>!done.has(id)||(k>0&&value(suffix[k-1])>value(id))))throw Error('Invalid sorted suffix');
+    if(frame.operation==='compare'){
+      const pair=frame.activeItemIds??[];const p=compiled.itemOrder.indexOf(pair[0]);
+      if(pair.length!==2||compiled.itemOrder[p+1]!==pair[1])throw Error('Comparison is not adjacent');
+    }
+    if(frame.operation==='swap'||frame.operation==='no swap'){
+      const previous=compileLoopFrame(spec,i-1);const pair=previous.frame.activeItemIds??[];
+      if(previous.frame.operation!=='compare'||pair.length!==2)throw Error('Operation requires comparison');
+      const shouldSwap=value(pair[0])>value(pair[1]);
+      if(shouldSwap!==(frame.operation==='swap'))throw Error('Incorrect comparison result');
+      const expected=[...previous.itemOrder];if(shouldSwap){const p=expected.indexOf(pair[0]);[expected[p],expected[p+1]]=[expected[p+1],expected[p]];}
+      if(JSON.stringify(expected)!==JSON.stringify(compiled.itemOrder))throw Error('Incorrect swap order');
+    }
+  }
+  const final=compileLoopFrame(spec,spec.frames.length-1).itemOrder.map(value);
+  if(final.some((v,i)=>i>0&&final[i-1]>v))throw Error('Sort did not finish');
+}

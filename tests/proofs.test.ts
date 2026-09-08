@@ -6,7 +6,7 @@ import { JoinRenderer } from '../src/figures/renderers/renderers/join';
 import { WorkflowRenderer } from '../src/figures/renderers/renderers/workflow';
 const host = () => document.createElementNS('http://www.w3.org/2000/svg', 'svg');
 describe('proof semantics and retained renderers', () => {
-  it('validates every frame', () => expect(validateProofs().visuals).toBe(3));
+  it('validates every frame', () => expect(validateProofs()).toEqual({visuals:4,variants:8,frames:76}));
   it('emits one row per matching pair and preserves unmatched Bob with NULLs', () => {
     expect(joined.rows.map(r => [r.leftRowId, r.rightRowId])).toEqual([['C1','O1'], ['C1','O2'], ['C2',null], ['C3','O3']]);
     expect(joined.rows[2].values['right.Orders.order']).toBeNull();

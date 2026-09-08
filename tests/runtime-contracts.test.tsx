@@ -24,3 +24,14 @@ it('makes renderer failures explicit, recovers updates and remounts, and destroy
   rerender(view('b',true));expect(screen.getByRole('alert')).toHaveTextContent('update failed');
   rerender(view('b'));expect(screen.queryByRole('alert')).toBeNull();unmount();expect(destroy).toHaveBeenCalledTimes(2);
 });
+it('P01/P03: previous seeking cancels playback, end replay restarts, live reduced motion stops',()=>{
+  vi.useFakeTimers();let change:((event:MediaQueryListEvent)=>void)|undefined;
+  const original=window.matchMedia;
+  window.matchMedia=(()=>({matches:false,addEventListener:(_name:string,fn:typeof change)=>{change=fn;},removeEventListener:()=>{}})) as typeof window.matchMedia;
+  const {unmount}=render(<FigurePlayer captions={['A','B','C']} stepIds={['a','b','c']}>{i=><output>{i}</output>}</FigurePlayer>);
+  fireEvent.click(screen.getByRole('button',{name:'Step'}));fireEvent.click(screen.getByRole('button',{name:'Play'}));fireEvent.click(screen.getByRole('button',{name:'Previous'}));
+  act(()=>vi.advanceTimersByTime(2600));expect(screen.getByRole('status')).toHaveTextContent('0');
+  fireEvent.click(screen.getByRole('button',{name:'Step'}));fireEvent.click(screen.getByRole('button',{name:'Step'}));fireEvent.click(screen.getByRole('button',{name:'Play'}));expect(screen.getByRole('status')).toHaveTextContent('0');
+  act(()=>change?.({matches:true} as MediaQueryListEvent));act(()=>vi.advanceTimersByTime(2600));expect(screen.getByRole('status')).toHaveTextContent('0');expect(screen.getByRole('button',{name:'Play'})).toBeDisabled();
+  unmount();expect(vi.getTimerCount()).toBe(0);window.matchMedia=original;
+});

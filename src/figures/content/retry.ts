@@ -25,3 +25,23 @@ export const workflow: WorkflowSpec = { kind: 'workflow', version: '1', id: 'qua
     { id: 'publish-success', states: { Publish: { status: 'success' } } },
   ] }],
 };
+/** Lesson policy only: generic workflow core remains a local transition validator, not a scheduler. */
+export function assertSuccessDependencies(spec:WorkflowSpec){
+  for(const run of spec.runs??[]){
+    let succeeded=new Set<string>();
+    for(let i=0;i<run.frames.length;i++){
+      const {states}=compileWorkflowRunFrame(spec,run.id,i);
+      for(const edge of spec.edges){
+        if(edge.condition!=='success')throw Error('Lesson supports success dependencies only');
+        if(['queued','running','success'].includes(states[edge.to].status)&&states[edge.from].status!=='success')throw Error(`Premature execution: ${edge.to}`);
+      }
+      for(const id of succeeded)if(states[id].status!=='success')throw Error('Successful upstream state must persist');
+      succeeded=new Set(Object.keys(states).filter(id=>states[id].status==='success'));
+    }
+  }
+}
+export function validateRetry(){
+  assertSuccessDependencies(workflow);
+  const retry=compileWorkflowRunFrame(workflow,'retry','quality-retry');
+  if(retry.states.Publish.status!=='upstream_failed'||retry.states.Quality.attempt!==2)throw Error('Invalid retry consequence');
+}
