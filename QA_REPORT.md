@@ -1,4 +1,16 @@
-# Milestone 2 QA report — current
+# Milestone 3 QA report — current
+
+Result: **PASS**. Date: 2026-09-08. Branch: `codex/join-cardinality-m3`. Validated implementation: `37845effb5fbdc52cb9a37dc0ea2c970c3239a98`; following evidence commit changes documentation/screenshots only.
+
+Ran `pnpm install --frozen-lockfile` and `pnpm run check` using the documented Node 24.19.0 / pnpm 11.19.0 environment. Both exited zero. Check includes strict typecheck, content validation (62 frames, 6 variants), 17 unit tests, production build and 7 Chromium browser tests. Browser suite: 1.5 minutes; JS: 381.93 kB / 111.29 kB gzip.
+
+Desktop 1440×1000 and phone 390×1000 pass: duplicate dataset keyboard choice, all four C1 matching pairs, six LEFT/five INNER output rows, source/pair DOM identity across mode/dataset switching, preserved frame, reduced motion, existing playback/keyboard/resize checks and no page horizontal overflow. Twenty Axe scans across baseline/comparison/cardinality states report zero serious/critical issues.
+
+Visually inspected both new screenshots in `docs/qa/m3/`: all six output rows fit the diagram; duplicate records and result rows are readable in the reflowed phone tables. No new framework gaps, dependencies or unresolved blockers. Only the existing benign NO_COLOR/FORCE_COLOR warning. No remote push or deployment.
+
+---
+
+# Milestone 2 QA report — historical
 
 Result: **PASS**. Date: 2026-09-08. Branch: `codex/sql-visuals-m2`.
 
