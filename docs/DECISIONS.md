@@ -1,5 +1,9 @@
 # Decisions
 
+## 2026-09-08 — duplicate keys are separate records
+
+The duplicate-key fixture adds C1-copy as a stable record ID while preserving customer=C1 as its join key. The UI calls it Alice (copy), distinguishes record counts from distinct customer counts and explains the 2×2 pair multiplication. This is a dataset variation of the existing seven-step comparison, preserving frame and pair identity rather than adding another renderer or execution system.
+
 ## 2026-09-08 — clean repository boundary
 
 - Start `Fluent2_Microsoft_J` as a virgin repository, not a fork.

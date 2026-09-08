@@ -1,5 +1,7 @@
 # Milestone 1 visual reuse
 
+Milestone 3 extends the same join family with duplicate C1 customer records: two left records × two right orders = four matching pairs, six total LEFT rows or five INNER rows. Seven aligned steps per variant; 62 total validated frames across six variants. Customer-record counts are explicitly distinguished from distinct customers. No additional renderer or dependency.
+
 | Concept | Retained family/core | Semantic trace | Identity and motion | Static/phone explanation |
 | --- | --- | --- | --- | --- |
 | LEFT JOIN | JoinRenderer / compileTableJoin | 7 steps: select, match, emit, unmatched NULL, final four rows | Source rows persist; emitted pair IDs identify both contributors; revealed rows move from contributor position | Solid customer/dashed order links, explicit NULL badge, full HTML tables with headers; tables reflow |

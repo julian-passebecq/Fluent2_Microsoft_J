@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Button, FluentProvider, webLightTheme } from '@fluentui/react-components';
 import { compileLoopFrame, compileWorkflowRunFrame, type TableData } from './figures/core';
-import { bubble, join, joinInput, joinLesson, workflow, workflowCaptions, type JoinMode } from './figures/content/proofs';
+import { bubble, joinInput, joinLesson, workflow, workflowCaptions, type JoinMode } from './figures/content/proofs';
 import { FigurePlayer } from './figures/react/FigurePlayer';
 import { RendererHost } from './figures/react/renderer-host';
 import './styles.css';
@@ -17,18 +17,18 @@ function DataTable({ data, active = [] }: { data: TableData; active?: readonly s
     <tbody>{data.rows.map(row => <tr key={row.id} data-active={active.includes(row.id)}>{data.columns.map(c => <td key={c.id}>{row.values[c.id] === null ? <strong>NULL</strong> : String(row.values[c.id])}</td>)}</tr>)}</tbody>
   </table>;
 }
-function Proof({ id, frame, reducedMotion, mode }: { id: string; frame: number; reducedMotion: boolean; mode: JoinMode }) {
-  const { result: joined, steps: joinSteps } = joinLesson(mode);
-  const options = { width: 960, height: id === 'join' ? 300 : 320, reducedMotion, transitionDurationMs: 450 };
+function Proof({ id, frame, reducedMotion, mode, duplicate }: { id: string; frame: number; reducedMotion: boolean; mode: JoinMode; duplicate: boolean }) {
+  const { spec: join, result: joined, steps: joinSteps } = joinLesson(mode, duplicate);
+  const options = { width: 960, height: id === 'join' ? 360 : 320, reducedMotion, transitionDurationMs: 450 };
   const canvas = id === 'join'
-    ? <RendererHost rendererId="table.join" input={joinInput(frame, mode)} options={options} ariaLabel="Customer and order row correspondence" fallback={joinSteps[frame].caption} />
+    ? <RendererHost rendererId="table.join" input={joinInput(frame, mode, duplicate)} options={options} ariaLabel="Customer and order row correspondence" fallback={joinSteps[frame].caption} />
     : id === 'sort'
       ? <RendererHost rendererId="algorithm.loop" input={{ spec: bubble, frame: compileLoopFrame(bubble, frame), description: 'Compare neighbors · dashed boxes are sorted' }} options={options} ariaLabel="Bubble sort values and active code" fallback={String(bubble.frames[frame].caption)} />
       : <RendererHost rendererId="workflow.topology" input={{ spec: workflow, frame: compileWorkflowRunFrame(workflow, 'retry', frame), mode: 'run' as const, description: 'Dependencies stay fixed; task status changes' }} options={options} ariaLabel="Source, Transform, Quality and Publish dependency chain" fallback={workflowCaptions[frame]} />;
   return <>
     <p className="pan-hint">Scroll the diagram sideways on smaller screens. Keyboard: focus it and use the arrow keys.</p>
     <div className="canvas-scroll" role="region" aria-label="Scrollable concept diagram" tabIndex={0}><div className="canvas">{canvas}</div></div>
-    {id === 'join' && <p className="join-count" role="status">{joinSteps[frame].reveal} output rows · {new Set(joined.rows.slice(0, joinSteps[frame].reveal).map(row => row.leftRowId)).size} of 3 customers represented{frame >= 4 ? (mode === 'left' ? ' · Bob preserved with NULL' : ' · Bob excluded: no matching order') : ''}</p>}
+    {id === 'join' && <p className="join-count" role="status">{joinSteps[frame].reveal} output rows · {new Set(joined.rows.slice(0, joinSteps[frame].reveal).map(row => row.leftRowId)).size} of {join.left.rows.length} {duplicate ? 'customer records' : 'customers'} represented{frame >= 4 ? (mode === 'left' ? ' · Bob preserved with NULL' : ' · Bob excluded: no matching order') : ''}</p>}
     {id === 'join' && <div className="tables">
       <DataTable data={join.left} active={joinSteps[frame].focus.filter(id => id.startsWith('left:')).map(id => id.slice(5))} />
       <DataTable data={join.right} active={joinSteps[frame].focus.filter(id => id.startsWith('right:')).map(id => id.slice(6))} />
@@ -44,7 +44,8 @@ function Proof({ id, frame, reducedMotion, mode }: { id: string; frame: number; 
 export function App() {
   const [selected, setSelected] = useState(0);
   const [mode, setMode] = useState<JoinMode>('left');
-  const { steps: joinSteps } = joinLesson(mode);
+  const [duplicate, setDuplicate] = useState(false);
+  const { steps: joinSteps } = joinLesson(mode, duplicate);
   const concept = concepts[selected];
   const captions = concept.id === 'join' ? joinSteps.map(s => s.caption) : concept.id === 'sort' ? bubble.frames.map(f => String(f.caption)) : workflowCaptions;
   return <FluentProvider theme={webLightTheme}>
@@ -56,13 +57,15 @@ export function App() {
         <div className="lesson-heading"><p className="eyebrow">{concept.domain}</p><h2 id="lesson-title">{concept.title}</h2><p className="question">{concept.question}</p><p>{concept.description}</p></div>
         {concept.id === 'join' && <div className="join-choice">
           <fieldset><legend>Compare join types</legend>{(['left', 'inner'] as const).map(value => <label key={value}><input type="radio" name="join-type" value={value} checked={mode === value} onChange={() => setMode(value)} />{value.toUpperCase()} JOIN</label>)}</fieldset>
+          <fieldset className="dataset-choice"><legend>Customer keys</legend>{[false, true].map(value => <label key={String(value)}><input type="radio" name="dataset" checked={duplicate === value} onChange={() => setDuplicate(value)} />{value ? 'Duplicate C1 key' : 'Unique keys'}</label>)}</fieldset>
+          {duplicate && <p className="cardinality-note">Two C1 records × two C1 orders = four pairs. A customer key is not a unique record ID here.</p>}
           <pre aria-label="SQL query"><code>{`SELECT c.name, o."order"
 FROM Customers c
 ${mode.toUpperCase()} JOIN Orders o
   ON c.customer = o.customer`}</code></pre>
         </div>}
-        <FigurePlayer key={concept.id} captions={captions} playbackKey={mode}>{(frame, reduced) => <Proof id={concept.id} frame={frame} reducedMotion={reduced} mode={mode} />}</FigurePlayer>
-        <aside className="takeaway"><h3>What to remember</h3><p>{concept.takeaway}</p></aside>
+        <FigurePlayer key={concept.id} captions={captions} playbackKey={`${mode}-${duplicate}`}>{(frame, reduced) => <Proof id={concept.id} frame={frame} reducedMotion={reduced} mode={mode} duplicate={duplicate} />}</FigurePlayer>
+        <aside className="takeaway"><h3>What to remember</h3><p>{concept.id === 'join' && duplicate ? 'Check key uniqueness before joining. Two records sharing C1 each match two orders, producing four pairs. Counting or summing the joined orders would double-count C1’s orders.' : concept.takeaway}</p></aside>
       </article>
       <footer>Explore at your pace. Every step works as a still picture.</footer>
     </main>

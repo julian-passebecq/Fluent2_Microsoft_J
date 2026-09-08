@@ -1,5 +1,12 @@
 # Milestone 1 worklog — 2026-09-08
 
+## Milestone 3 — duplicate-key cardinality
+
+- Continued on codex/join-cardinality-m3 from completed Milestone 2. Wrote MILESTONE_3_PLAN.md before implementation.
+- Added a separate C1-copy record with the same join key, seven aligned LEFT/INNER steps, dataset radio controls and explicit four-pair explanation.
+- Kept the retained compiler/renderer unchanged; existing pair IDs survive dataset switches. Source-record counts distinguish duplicate records from distinct customers. Increased the fixed join viewport to fit six rows.
+- Added pair-completeness and both-viewport browser coverage for counts, mode/dataset switches, keyboard, identity, reduced motion and Axe. Full release evidence recorded in QA_REPORT.md.
+
 - Read 00_READ_FIRST.md first, then every work-pack entry including CODEX_MASTER_PROMPT.txt; read START_REPO_HERE.md and AGENTS.md before implementation. Applied the master prompt within the user's explicit Milestone 1 request.
 - Confirmed origin is julian-passebecq/Fluent2_Microsoft_J and clean main was still bd5908f. Created codex/bootstrap-m1.
 - Inspected immutable upstream Git objects at 30e69639bfc3929c348fd8f9c6c38a2cb61984d8; did not modify upstream. Committed the dependency plan before extraction.

@@ -33,11 +33,27 @@ export const innerJoinSteps = joinSteps.map((step, index) => {
   if (index === 6) return { caption: 'Emit Chloé × O3. Two customers survive in three matched output rows; Bob is excluded.', reveal: 3, focus: ['left:C3', 'right:O3', innerJoined.rowOrder[2]] };
   return step;
 });
-export function joinLesson(mode: JoinMode) {
+export const duplicateJoin: TableJoinSpec = { ...join, left: { ...join.left, rows: [join.left.rows[0], { id: 'C1-copy', values: { customer: 'C1', name: 'Alice (copy)' } }, ...join.left.rows.slice(1)] } };
+const duplicateResults = { left: compileTableJoin(duplicateJoin), inner: compileTableJoin({ ...duplicateJoin, joinType: 'inner' }) };
+export function joinLesson(mode: JoinMode, duplicate = false) {
+  if (duplicate) {
+    const result = duplicateResults[mode];
+    const pairs = result.rows.filter(row => row.values['left.Customers.customer'] === 'C1').map(row => row.id);
+    const steps = [
+      { caption: 'Customers contains two separate records with key C1: Alice and Alice (copy). Their record IDs are different.', reveal: 0, focus: ['left:C1', 'left:C1-copy'] },
+      { caption: 'Both C1 records match both orders, O1 and O2. Two records × two orders means four matching pairs.', reveal: 0, focus: ['left:C1', 'left:C1-copy', 'right:O1', 'right:O2'] },
+      { caption: 'Emit all four C1 pairs. O1 and O2 each appear twice; counting output rows would overcount orders.', reveal: 4, focus: [...pairs, 'left:C1', 'left:C1-copy'] },
+      { caption: 'Select Bob (C2). The duplicate C1 key does not create a match for C2.', reveal: 4, focus: ['left:C2'] },
+      { caption: mode === 'left' ? 'LEFT preserves Bob with NULL order values, adding a fifth row.' : 'INNER excludes Bob because no order matches C2. Four rows remain.', reveal: mode === 'left' ? 5 : 4, focus: mode === 'left' ? ['left:C2', result.rowOrder[4]] : ['left:C2'] },
+      { caption: 'Chloé (C3) matches O3 once. Only C1 has repeated keys on both sides.', reveal: mode === 'left' ? 5 : 4, focus: ['left:C3', 'right:O3'] },
+      { caption: `${mode === 'left' ? 'Six' : 'Five'} output rows: four C1 pairs, one C3 pair${mode === 'left' ? ', and Bob’s NULL row' : ''}. There are still only three input orders.`, reveal: result.rows.length, focus: result.rowOrder },
+    ];
+    return { spec: { ...duplicateJoin, joinType: mode }, result, steps };
+  }
   return mode === 'left' ? { spec: join, result: joined, steps: joinSteps } : { spec: innerJoin, result: innerJoined, steps: innerJoinSteps };
 }
-export function joinInput(index: number, mode: JoinMode = 'left') {
-  const { spec, result, steps } = joinLesson(mode);
+export function joinInput(index: number, mode: JoinMode = 'left', duplicate = false) {
+  const { spec, result, steps } = joinLesson(mode, duplicate);
   const step = steps[index];
   const track = { steps: steps.map((s, i) => ({ id: `join-${i}`, title: mode === 'left' ? 'Match keys → preserve every customer' : 'Match keys → keep matching pairs only', focus: { entityIds: s.focus } })) };
   return { spec, result, revealCount: step.reveal, title: 'Customers → matching orders → result',
@@ -100,7 +116,8 @@ export function validateProofs() {
   if (!result.valid) throw new Error(JSON.stringify(result.issues));
   joinSteps.forEach((_, i) => joinInput(i));
   innerJoinSteps.forEach((_, i) => joinInput(i, 'inner'));
+  for (const mode of ['left', 'inner'] as const) joinSteps.forEach((_, i) => joinInput(i, mode, true));
   bubble.frames.forEach((_, i) => compileLoopFrame(bubble, i));
   workflowCaptions.forEach((_, i) => compileWorkflowRunFrame(workflow, 'retry', i));
-  return { visuals: 3, variants: 4, frames: joinSteps.length + innerJoinSteps.length + bubble.frames.length + workflowCaptions.length };
+  return { visuals: 3, variants: 6, frames: 4 * joinSteps.length + bubble.frames.length + workflowCaptions.length };
 }

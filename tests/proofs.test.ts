@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { bubble, join, joined, innerJoined, innerJoinSteps, joinInput, joinSteps, workflow, validateProofs } from '../src/figures/content/proofs';
+import { bubble, join, joined, innerJoined, innerJoinSteps, joinInput, joinLesson, joinSteps, workflow, validateProofs } from '../src/figures/content/proofs';
 import { compileLoopFrame, compileWorkflowRunFrame, validateWorkflowSpec } from '../src/figures/core';
 import { LoopRenderer } from '../src/figures/renderers/renderers/loop';
 import { JoinRenderer } from '../src/figures/renderers/renderers/join';
@@ -20,6 +20,16 @@ describe('proof semantics and retained renderers', () => {
     expect(innerJoinSteps[4].reveal).toBe(2);
     expect(joinSteps[4].reveal).toBe(3);
     expect(joinInput(4, 'inner').explanation?.step.focus.entityIds).toEqual(['left:C2']);
+  });
+  it('expands repeated C1 keys into every matching pair without merging records', () => {
+    for (const mode of ['left','inner'] as const) {
+      const { spec, result } = joinLesson(mode, true);
+      expect(new Set(spec.left.rows.map(row => row.id)).size).toBe(4);
+      expect(result.rows.filter(row => row.values['left.Customers.customer'] === 'C1').map(row => [row.leftRowId,row.rightRowId])).toEqual([['C1','O1'],['C1','O2'],['C1-copy','O1'],['C1-copy','O2']]);
+      expect(result.rows).toHaveLength(mode === 'left' ? 6 : 5);
+      expect(result.rows.filter(row => row.rightRowId === null)).toHaveLength(mode === 'left' ? 1 : 0);
+      expect(joinLesson(mode).result.rowOrder.every(id => result.rowOrder.includes(id))).toBe(true);
+    }
   });
   it('switches join types in place without recreating sources or surviving output pairs', () => {
     const svg = host(), renderer = new JoinRenderer();
