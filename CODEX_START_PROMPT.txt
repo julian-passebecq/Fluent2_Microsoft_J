@@ -1,0 +1,13 @@
+You are bootstrapping Datapass Visual IT Concepts in this NEW clean repository.
+
+Read START_REPO_HERE.md, AGENTS.md, INITIAL_IMPORT_SCOPE.md, UPSTREAM_SOURCE.json, handoff/FOCUSED_SCOPE.md and handoff/QA_AND_DONE.md before changing code.
+
+The product boundary is already decided. Do not repeat the broad architecture debate and do not migrate to Web Components, Vega, D3plus, ECharts, G2 or a new animation engine in this bootstrap task.
+
+Use julian-passebecq/react_ms_fluent_2_framework at audited commit 30e69639bfc3929c348fd8f9c6c38a2cb61984d8 as the source of proven reusable code, but do NOT fork or copy the whole monorepo.
+
+First produce an import/dependency map. Then surgically import the smallest working closure needed for Visual IT Concepts: pure semantic core, required SVG renderers, thin React adapter, Figure composition, required Fluent UI pieces, selected teaching content and focused tests. Record exact paths/source SHAs in UPSTREAM_IMPORT_MANIFEST.md.
+
+Milestone 1 is not new features. It is a clean independent build with at least one SQL/table visual, one algorithm visual and one workflow/DAG visual using the retained semantic system. Establish pnpm-lock.yaml, frozen install, typecheck, semantic/content validation, focused tests and production build before expanding the catalog.
+
+Do not touch the separate editorial D3 repositories, draw.io project, Power BI tooling, Formation, Code Interview, portfolio or Norsk projects.

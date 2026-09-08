@@ -1,0 +1,7 @@
+{
+  "repository": "julian-passebecq/react_ms_fluent_2_framework",
+  "auditedReusableCommit": "30e69639bfc3929c348fd8f9c6c38a2cb61984d8",
+  "historicalV4ConsumerPin": "ce8353ee0878ca74b2fe24a1af7de657a6ba61f2",
+  "sourceWorkspace": "project/conceptmotion_studio",
+  "policy": "trace dependency closure first; import minimal proven subset; preserve provenance"
+}
