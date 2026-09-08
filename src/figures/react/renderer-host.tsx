@@ -117,6 +117,7 @@ export function RendererHost<Input>({
         style={{ display: error ? 'none' : 'block', width: '100%', height: 'auto', maxWidth: '100%' }}
       />
       <div role={error ? 'alert' : 'note'} style={error ? undefined : visuallyHidden} data-conceptmotion-fallback>
+        {error && <p><strong>Visualization unavailable.</strong> {error.message}</p>}
         {fallbackContent}
       </div>
     </div>
