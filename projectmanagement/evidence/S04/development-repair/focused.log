@@ -1,0 +1,24 @@
+
+ RUN  v5.0.0 D:/PROJ/Fluent2_Microsoft_J
+
+ ❯ tests/catalog-repair.test.ts (13 tests | 1 failed) 106ms
+   × accepts equivalent copied frames with reordered object properties and lesson order 15ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/catalog-repair.test.ts > accepts equivalent copied frames with reordered object properties and lesson order
+Error: Incomplete contributor result
+ ❯ validateGrouping src/figures/content/grouping.ts:51:421
+
+ ❯ Object.validate src/figures/content/catalog.ts:14:136
+ ❯ validateCatalog src/figures/content/catalog.ts:29:16
+ ❯ tests/catalog-repair.test.ts:34:10
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 2 passed (3)
+      Tests  1 failed | 22 passed (23)
+   Start at  21:38:35
+   Duration  3.83s (environment 49%, transform 20%, setup 19%, import 9%, tests 2%)
+

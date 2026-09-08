@@ -1,5 +1,34 @@
 # S04 development report
 
+## Current repair handoff — S04-QA-01
+
+2026-09-08. Medium development. **READY FOR LIGHT QA — repair retest**. This section supersedes the original candidate/results below; historical evidence remains intact.
+
+Candidate `17aaee96e98a43b02160c415e289e9c9380d559e`, branch `codex/s04-group-by-foundation`, reviewed predecessor `7ff24f0`, M3 base `42886919fa2b574a499b249989eb9da0f649173d`. Later documentation/evidence checkpoint does not change production or tests. Original QA unit/browser additions are included unchanged; both SHA256 values match independent-qa/hashes.txt. Unrelated AGENTS.md and local planning/QA documents remain preserved; no push, merge or deployment.
+
+Repaired both manifestations of S04-QA-01. Catalog requires the complete supported lesson set, resolves a trusted validator from its own definitions, and passes the supplied steps into that validator. Grouping checks all supplied frame data against the fixed named teaching trace, including table values, typed keys, contributors, assigned IDs, pending/result state and totals, then retains progression/reconciliation assertions. Structural comparisons ignore object property order. This enforces the approved authored fixtures; it does not introduce arbitrary dataset lessons or change aggregation arithmetic. Independent hand-calculated expectations remain in the tests, separate from the compiler.
+
+Added 13 adjacent regression cases: each omitted lesson, eight corruption classes exercised in both grouping variants (including no-op supplied callbacks), and a valid copied/reordered case. Original two failing QA tests pass unchanged. First focused run: 22 passed/1 failed because the valid-copy test exposed the older JSON property-order comparison. Replaced that comparison with the structural comparison; preserved the failure log.
+
+| Run | Command and result | Evidence |
+| --- | --- | --- |
+| S04-R01 | `pnpm exec vitest run tests/s04-independent.test.ts tests/catalog-repair.test.ts tests/aggregation.test.ts`: exit1,22 passed/1 failed,3.83s | [First focused failure](../evidence/S04/development-repair/focused.log) |
+| S04-R02 | Same focused command after repair: exit0,23 passed,2.60s | [Focused retest](../evidence/S04/development-repair/focused-retest.log) |
+| S04-R03 | `pnpm install --frozen-lockfile`: exit0,328ms; lockfile unchanged | [Install](../evidence/S04/development-repair/install.log) |
+| S04-R04 | `pnpm run check` at17aaee9: exit0; typecheck;4 lessons/8 variants/76 frames;44 units/8 files,14.07s;build516ms;17 browser tests,1.1m | [Complete gate](../evidence/S04/development-repair/check.log) |
+
+Environment: original shared Windows checkout, Node24.19.0/pnpm11.19.0 with the previously documented runtime PATH. Production preview owned by this run, strict4194, no server reuse. No skips, retries, assertion weakening or timeout changes. Browser gate includes desktop/390px, independent QA keyboard tests, Axe and page overflow checks; no serious/critical Axe or page-overflow assertion failures. Build remains JS394.71kB/CSS3.99kB; both asset SHA256 hashes match the independently reviewed QA build exactly.
+
+Limits: not a clean-checkout run. No new manual screenshot inspection or screen-reader session in this validator-only repair; QA's 32-image review remains historical evidence for identical JS/CSS. Independent repair QA and lead acceptance are still pending. Backlog defect is not independently closed by development. No S05 work.
+
+Exact retest prompt:
+
+```text
+Act as the independent light QA and backlog model for the S04 repair retest. Read AGENTS.md and projectmanagement/README.md, STATUS.md, TEAM_WORKFLOW.md, sprints/S04.md, TEST_STRATEGY.md, reports/S04-qa.md and the current repair section of reports/S04-development.md. Verify candidate 17aaee96e98a43b02160c415e289e9c9380d559e: independently retest both S04-QA-01 reproductions, review the supplied-frame validation and adjacent mutations, and run the release gate on this candidate's production build. Preserve the original QA tests, expected values and historical failures. Record actual revisions, commands, results and visual-review limits; maintain BACKLOG.md, BRANCH_AND_TEST_LEDGER.md, STATUS.md and reports/S04-qa.md. Return ordinary defects as one repair batch, or use LEAD DECISION REQUIRED for a material contract issue. If all blocking checks pass, say READY FOR LEAD REVIEW and give the lead prompt. Do not change production semantics, accept S04 or start S05.
+```
+
+## Historical original development handoff
+
 Role: medium development. Date: 2026-09-08. Verdict: **READY FOR LIGHT QA — S04**. Next actor: independent light QA.
 
 ## Decision summary

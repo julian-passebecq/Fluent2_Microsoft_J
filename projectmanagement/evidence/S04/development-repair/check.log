@@ -1,0 +1,55 @@
+$ pnpm run typecheck && pnpm run validate && pnpm test && pnpm run build && pnpm run test:browser
+$ tsc --noEmit
+$ tsx scripts/validate-content.ts
+Content validation passed: { visuals: 4, variants: 8, frames: 76 }
+$ vitest run
+
+ RUN  v5.0.0 D:/PROJ/Fluent2_Microsoft_J
+
+
+ Test Files  8 passed (8)
+      Tests  44 passed (44)
+   Start at  21:39:33
+   Duration  14.07s (environment 34%, import 33%, setup 21%, transform 9%, tests 4%)
+
+$ pnpm run typecheck && vite build
+$ tsc --noEmit
+vite v8.2.2 building client environment for production...
+transforming...
+✓ 2174 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                   0.53 kB │ gzip:   0.31 kB
+dist/assets/index-DKAcxEgP.css    3.99 kB │ gzip:   1.41 kB
+dist/assets/index-kwnhVYiV.js   394.71 kB │ gzip: 114.92 kB
+
+✓ built in 516ms
+$ playwright test
+[WebServer] (node:47176) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:39484) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 17 tests using 1 worker
+
+(node:51364) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok  1 tests\browser\cardinality.spec.ts:3:33 › duplicate-key multiplication at 1440px (4.3s)
+  ok  2 tests\browser\cardinality.spec.ts:3:33 › duplicate-key multiplication at 390px (2.7s)
+  ok  3 tests\browser\grouping.spec.ts:3:61 › GROUP BY known 1440px (2.8s)
+  ok  4 tests\browser\grouping.spec.ts:3:61 › GROUP BY NULL 1440px (3.1s)
+  ok  5 tests\browser\grouping.spec.ts:3:61 › GROUP BY known 390px (2.8s)
+  ok  6 tests\browser\grouping.spec.ts:3:61 › GROUP BY NULL 390px (2.8s)
+  ok  7 tests\browser\join-comparison.spec.ts:4:34 › LEFT and INNER comparison at 1440px (3.6s)
+  ok  8 tests\browser\join-comparison.spec.ts:4:34 › LEFT and INNER comparison at 390px (3.0s)
+  ok  9 tests\browser\proofs.spec.ts:5:3 › SQL joins: identity, keyboard, Axe and overflow at 1440px (3.8s)
+  ok 10 tests\browser\proofs.spec.ts:5:3 › Bubble sort: identity, keyboard, Axe and overflow at 1440px (4.4s)
+  ok 11 tests\browser\proofs.spec.ts:5:3 › Retry & blocked downstream: identity, keyboard, Axe and overflow at 1440px (4.5s)
+  ok 12 tests\browser\proofs.spec.ts:5:3 › SQL joins: identity, keyboard, Axe and overflow at 390px (3.8s)
+  ok 13 tests\browser\proofs.spec.ts:5:3 › Bubble sort: identity, keyboard, Axe and overflow at 390px (5.8s)
+  ok 14 tests\browser\proofs.spec.ts:5:3 › Retry & blocked downstream: identity, keyboard, Axe and overflow at 390px (4.7s)
+  ok 15 tests\browser\proofs.spec.ts:73:1 › reduced motion and navigation cancel playback (2.9s)
+  ok 16 tests\browser\s04-independent.spec.ts:4:3 › S04 independent keyboard and static states 1440 (3.0s)
+  ok 17 tests\browser\s04-independent.spec.ts:4:3 › S04 independent keyboard and static states 390 (3.3s)
+
+  17 passed (1.1m)
