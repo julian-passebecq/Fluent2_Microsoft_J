@@ -28,12 +28,27 @@ export function compileGroupingFrame(variant:GroupingVariant,id:GroupingStepId):
   return {id,caption:captions[id],table:spec.table,groups,assignedRowIds:groups.flatMap(g=>g.sourceRowIds),knownTotal,phase:id==='source-grain'?'source':id==='emit-groups'||id==='compare-grain'?'result':'grouping'};
 }
 export function groupingFrames(variant:GroupingVariant){return groupingStepIds.map(id=>compileGroupingFrame(variant,id));}
-export function validateGrouping(variant:GroupingVariant){
-  const frames=groupingFrames(variant),expected=compileAggregation(groupingSpec(variant));let prior:string[]=[];
+// These are fixed authored traces, not arbitrary aggregation inputs. Check every
+// supplied semantic field against its named step, ignoring object property order.
+function sameFrameData(actual:unknown,expected:unknown):boolean {
+  if(Object.is(actual,expected))return true;
+  if(Array.isArray(expected))return Array.isArray(actual)&&actual.length===expected.length&&expected.every((value,i)=>sameFrameData(actual[i],value));
+  if(typeof expected!=='object'||expected===null||typeof actual!=='object'||actual===null||Array.isArray(actual))return false;
+  const actualFields:Record<string,unknown>=Object.fromEntries(Object.entries(actual));
+  const expectedFields=Object.entries(expected);
+  return Object.keys(actualFields).length===expectedFields.length&&expectedFields.every(([key,value])=>Object.hasOwn(actualFields,key)&&sameFrameData(actualFields[key],value));
+}
+function assertGroupingFrames(frames:readonly unknown[],variant:GroupingVariant):asserts frames is readonly GroupFrame[] {
+  const expected=groupingFrames(variant);
+  if(frames.length!==expected.length||expected.some((frame,i)=>!sameFrameData(frames[i],frame)))throw Error('Invalid supplied grouping frame state');
+}
+export function validateGrouping(variant:GroupingVariant,frames:readonly unknown[]=groupingFrames(variant)){
+  assertGroupingFrames(frames,variant);
+  const expected=compileAggregation(groupingSpec(variant));let prior:string[]=[];
   for(const frame of frames){
     const assigned=frame.groups.flatMap(g=>g.sourceRowIds);
     if(new Set(assigned).size!==assigned.length||prior.some(id=>!assigned.includes(id)))throw Error('Invalid grouping membership progression');
-    for(const group of frame.groups){const full=expected.groups.find(g=>g.id===group.id);if(!full)throw Error('Unknown group');if(group.phase==='pending'&&(group.values!==null||group.sourceRowIds.length))throw Error('Pending group exposes aggregates');if(group.phase==='complete'&&(JSON.stringify(group.values)!==JSON.stringify(full.values)||JSON.stringify(group.sourceRowIds)!==JSON.stringify(full.sourceRowIds)))throw Error('Incomplete contributor result');}
+    for(const group of frame.groups){const full=expected.groups.find(g=>g.id===group.id);if(!full)throw Error('Unknown group');if(group.phase==='pending'&&(group.values!==null||group.sourceRowIds.length))throw Error('Pending group exposes aggregates');if(group.phase==='complete'&&(!sameFrameData(group.values,full.values)||!sameFrameData(group.sourceRowIds,full.sourceRowIds)))throw Error('Incomplete contributor result');}
     prior=[...assigned];
   }
   if(prior.length!==groupOrders.rows.length||groupOrders.rows.some(row=>!prior.includes(row.id)))throw Error('Unreconciled contributors');
