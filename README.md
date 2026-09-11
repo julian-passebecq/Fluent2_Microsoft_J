@@ -1,3 +1,5 @@
+> **Pro AI takeover:** start with [handover/README.md](handover/README.md). S04 remains unaccepted.
+
 # Fluent2 Microsoft J — Visual IT Concepts
 
 **GROUP BY** now shows six orders becoming three customer-key groups. Step through membership and compare known amounts with NULL amounts to understand COUNT(*), COUNT(amount) and SUM. The query is illustrative; this app does not execute SQL. Browser tests use an owned production preview on port 4194 and refuse to reuse an existing listener.
@@ -28,7 +30,7 @@ pnpm exec playwright install chromium
 pnpm check
 ```
 
-`pnpm check` runs typecheck, content validation, unit tests, production build and Chromium smoke. Browser tests serve the production build on port 4173. Screenshots are written to ignored `test-results/`. No upstream checkout is needed to install, build, test or run the app.
+`pnpm check` runs typecheck, content validation, unit tests, production build and Chromium smoke. Browser tests serve the production build on strict, owned port 4194. Screenshots are written to ignored `test-results/`. No upstream checkout is needed to install, build, test or run the app.
 
 See `UPSTREAM_IMPORT_MANIFEST.md` for every retained path/blob and adaptation, `docs/BOOTSTRAP_IMPORT_PLAN.md` for the inspected closure, and `QA_REPORT.md` for release evidence. `scripts/import-upstream.mjs` records the initial extraction procedure only; do not rerun it over locally adapted modules.
 

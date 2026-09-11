@@ -1,0 +1,29 @@
+$ playwright test
+[WebServer] (node:53396) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:19664) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 17 tests using 1 worker
+
+(node:63492) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok  1 tests\browser\cardinality.spec.ts:3:33 › duplicate-key multiplication at 1440px (3.3s)
+  ok  2 tests\browser\cardinality.spec.ts:3:33 › duplicate-key multiplication at 390px (3.5s)
+  ok  3 tests\browser\grouping.spec.ts:3:61 › GROUP BY known 1440px (3.4s)
+  ok  4 tests\browser\grouping.spec.ts:3:61 › GROUP BY NULL 1440px (3.2s)
+  ok  5 tests\browser\grouping.spec.ts:3:61 › GROUP BY known 390px (2.7s)
+  ok  6 tests\browser\grouping.spec.ts:3:61 › GROUP BY NULL 390px (2.9s)
+  ok  7 tests\browser\join-comparison.spec.ts:4:34 › LEFT and INNER comparison at 1440px (3.1s)
+  ok  8 tests\browser\join-comparison.spec.ts:4:34 › LEFT and INNER comparison at 390px (2.6s)
+  ok  9 tests\browser\proofs.spec.ts:5:3 › SQL joins: identity, keyboard, Axe and overflow at 1440px (4.1s)
+  ok 10 tests\browser\proofs.spec.ts:5:3 › Bubble sort: identity, keyboard, Axe and overflow at 1440px (4.8s)
+  ok 11 tests\browser\proofs.spec.ts:5:3 › Retry & blocked downstream: identity, keyboard, Axe and overflow at 1440px (4.3s)
+  ok 12 tests\browser\proofs.spec.ts:5:3 › SQL joins: identity, keyboard, Axe and overflow at 390px (3.9s)
+  ok 13 tests\browser\proofs.spec.ts:5:3 › Bubble sort: identity, keyboard, Axe and overflow at 390px (4.5s)
+  ok 14 tests\browser\proofs.spec.ts:5:3 › Retry & blocked downstream: identity, keyboard, Axe and overflow at 390px (4.1s)
+  ok 15 tests\browser\proofs.spec.ts:73:1 › reduced motion and navigation cancel playback (2.5s)
+  ok 16 tests\browser\s04-independent.spec.ts:4:3 › S04 independent keyboard and static states 1440 (2.8s)
+  ok 17 tests\browser\s04-independent.spec.ts:4:3 › S04 independent keyboard and static states 390 (2.5s)
+
+  17 passed (1.1m)

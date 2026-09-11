@@ -1,0 +1,45 @@
+$ vitest run
+
+ RUN  v5.0.0 D:/PROJ/Fluent2_Microsoft_J
+
+ ❯ tests/s04-lead-validation.test.ts (5 tests | 4 failed) 65ms
+   × S04-LEAD-01: rejects supplied JOIN reveal count corruption in every variant 37ms
+   × S04-LEAD-01: rejects supplied JOIN focus reference corruption in every variant 8ms
+   × S04-LEAD-01: rejects supplied JOIN outcome corruption in every variant 7ms
+   × S04-LEAD-01: rejects an invalid authored reveal even when canonical data shares the error 4ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/s04-lead-validation.test.ts > S04-LEAD-01: rejects supplied JOIN reveal count corruption in every variant
+ FAIL  tests/s04-lead-validation.test.ts > S04-LEAD-01: rejects supplied JOIN focus reference corruption in every variant
+ FAIL  tests/s04-lead-validation.test.ts > S04-LEAD-01: rejects supplied JOIN outcome corruption in every variant
+AssertionError: expected [Function] to throw an error
+ ❯ tests/s04-lead-validation.test.ts:28:46
+     26|           }
+     27|         : lesson);
+     28|       expect(() => validateCatalog(altered)).toThrow();
+       |                                              ^
+     29|     }
+     30|   }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  tests/s04-lead-validation.test.ts > S04-LEAD-01: rejects an invalid authored reveal even when canonical data shares the error
+AssertionError: expected [Function] to throw an error
+ ❯ tests/s04-lead-validation.test.ts:38:37
+     36|   try {
+     37|     frame.reveal = -1;
+     38|     expect(() => validateCatalog()).toThrow();
+       |                                     ^
+     39|   } finally {
+     40|     frame.reveal = previous;
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+
+ Test Files  1 failed | 8 passed (9)
+      Tests  4 failed | 45 passed (49)
+   Start at  23:13:12
+   Duration  10.41s (environment 52%, import 25%, setup 17%, transform 3%, tests 3%)
+
+[ELIFECYCLE] Test failed. See above for more details.

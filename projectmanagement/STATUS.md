@@ -1,3 +1,5 @@
+> Closeout 2026-09-11: paused for one Pro AI. Start with [handover](../handover/README.md). Repair 02 is developer-complete at 8aa89e6; retest/acceptance pending. Earlier role prompts/verdicts are historical; do not restart the agent relay.
+
 # Current execution state
 
 Updated 2026-09-08 by medium developer. **S04: READY_FOR_QA — READY FOR LIGHT QA (repair 02); not accepted.**

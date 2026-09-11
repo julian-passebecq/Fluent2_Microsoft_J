@@ -1,0 +1,166 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: join-comparison.spec.ts >> LEFT and INNER comparison at 390px
+- Location: tests\browser\join-comparison.spec.ts:4:34
+
+# Error details
+
+```
+Test timeout of 30000ms exceeded.
+```
+
+# Page snapshot
+
+```yaml
+- generic [ref=e3]:
+  - link "Skip to concept" [ref=e4] [cursor=pointer]:
+    - /url: "#lesson"
+  - main [ref=e5]:
+    - generic [ref=e6]:
+      - paragraph [ref=e7]: DATAPASS / VISUAL IT CONCEPTS
+      - heading "See the logic." [level=1] [ref=e8]
+      - paragraph [ref=e9]: Small examples. Visible state. Understand what changes—and why.
+    - navigation "Choose a concept" [ref=e10]:
+      - button "SQL joins" [pressed] [ref=e11]
+      - button "Bubble sort" [ref=e12]
+      - button "Retry & blocked downstream" [ref=e13]
+    - article [ref=e14]:
+      - generic [ref=e15]:
+        - paragraph [ref=e16]: SQL & TABLES
+        - heading "SQL joins" [level=2] [ref=e17]
+        - paragraph [ref=e18]: What happens when a customer has no orders?
+        - paragraph [ref=e19]: Switch between LEFT and INNER at the same step. Watch what changes for Bob, who has no orders.
+      - generic [ref=e20]:
+        - group "Compare join types" [ref=e21]:
+          - generic [ref=e23] [cursor=pointer]:
+            - radio "LEFT JOIN" [checked] [active] [ref=e24]
+            - text: LEFT JOIN
+          - generic [ref=e25] [cursor=pointer]:
+            - radio "INNER JOIN" [ref=e26]
+            - text: INNER JOIN
+        - group "Customer keys" [ref=e27]:
+          - generic [ref=e29] [cursor=pointer]:
+            - radio "Unique keys" [checked] [ref=e30]
+            - text: Unique keys
+          - generic [ref=e31] [cursor=pointer]:
+            - radio "Duplicate C1 key" [ref=e32]
+            - text: Duplicate C1 key
+        - generic "SQL query" [ref=e33]:
+          - code [ref=e34]: SELECT c.name, o."order" FROM Customers c LEFT JOIN Orders o ON c.customer = o.customer
+      - generic [ref=e35]:
+        - generic "Visual playback" [ref=e36]:
+          - button "Play" [ref=e37]
+          - button "Previous" [ref=e38]
+          - button "Step" [disabled] [ref=e39]
+          - button "Reset" [ref=e40]
+          - generic [ref=e41]: Step 7 of 7
+        - paragraph [ref=e42]: Emit Chloé × O3. All three customers survive in four output rows.
+        - paragraph [ref=e43]: "Scroll the diagram sideways on smaller screens. Keyboard: focus it and use the arrow keys."
+        - region "Scrollable concept diagram" [ref=e44]:
+          - generic [ref=e46]:
+            - 'img "Customers → matching orders → result 4 output rows · solid links: customer · dashed links: order" [ref=e47]':
+              - generic [ref=e48]:
+                - generic [ref=e49]:
+                  - generic [ref=e50]: Customers → matching orders → result
+                  - generic [ref=e51]: "4 output rows · solid links: customer · dashed links: order"
+                - generic [ref=e52]:
+                  - generic [ref=e53]: LEFT · Customers
+                  - generic [ref=e54]: RIGHT · Orders
+                  - generic [ref=e55]: OUTPUT · LEFT
+                  - group "left source row C1" [ref=e60]:
+                    - generic [ref=e62]: C1 · C1
+                  - group "left source row C2" [ref=e63]:
+                    - generic [ref=e65]: C2 · C2
+                  - group "left source row C3" [ref=e66]:
+                    - generic [ref=e68]: C3 · C3
+                  - group "right source row O1" [ref=e69]:
+                    - generic [ref=e71]: O1 · C1
+                  - group "right source row O2" [ref=e72]:
+                    - generic [ref=e74]: O2 · C1
+                  - group "right source row O3" [ref=e75]:
+                    - generic [ref=e77]: O3 · C3
+                  - group "Result row customer-orders:row:left:value:C1:right:value:O1" [ref=e78]:
+                    - generic [ref=e80]: C1 × O1
+                    - generic [ref=e81]: MATCH
+                  - group "Result row customer-orders:row:left:value:C1:right:value:O2" [ref=e82]:
+                    - generic [ref=e84]: C1 × O2
+                    - generic [ref=e85]: MATCH
+                  - group "Result row customer-orders:row:left:value:C2:right:none" [ref=e86]:
+                    - generic [ref=e88]: C2 × NULL
+                    - generic [ref=e89]: NULL-EXTENDED
+                  - group "Result row customer-orders:row:left:value:C3:right:value:O3" [ref=e90]:
+                    - generic [ref=e92]: C3 × O3
+                    - generic [ref=e93]: MATCH
+                - generic [ref=e94]: Match keys → preserve every customer
+            - note [ref=e96]: Emit Chloé × O3. All three customers survive in four output rows.
+        - status [ref=e97]: 4 output rows · 3 of 3 customers represented · Bob preserved with NULL
+        - generic [ref=e98]:
+          - table "Customers · 3 rows" [ref=e99]:
+            - caption [ref=e100]:
+              - text: Customers
+              - generic [ref=e101]: · 3 rows
+            - rowgroup [ref=e102]:
+              - row [ref=e103]:
+                - columnheader "Customer key" [ref=e104]
+                - columnheader "Name" [ref=e105]
+            - rowgroup [ref=e106]:
+              - row [ref=e107]:
+                - cell "C1" [ref=e108]
+                - cell "Alice" [ref=e109]
+              - row [ref=e110]:
+                - cell "C2" [ref=e111]
+                - cell "Bob" [ref=e112]
+              - row [ref=e113]:
+                - cell "C3" [ref=e114]
+                - cell "Chloé" [ref=e115]
+          - table "Orders · 3 rows" [ref=e116]:
+            - caption [ref=e117]:
+              - text: Orders
+              - generic [ref=e118]: · 3 rows
+            - rowgroup [ref=e119]:
+              - row [ref=e120]:
+                - columnheader "Order" [ref=e121]
+                - columnheader "Customer key" [ref=e122]
+            - rowgroup [ref=e123]:
+              - row [ref=e124]:
+                - cell "O1" [ref=e125]
+                - cell "C1" [ref=e126]
+              - row [ref=e127]:
+                - cell "O2" [ref=e128]
+                - cell "C1" [ref=e129]
+              - row [ref=e130]:
+                - cell "O3" [ref=e131]
+                - cell "C3" [ref=e132]
+          - table "Joined result · 4 rows" [ref=e133]:
+            - caption [ref=e134]:
+              - text: Joined result
+              - generic [ref=e135]: · 4 rows
+            - rowgroup [ref=e136]:
+              - row [ref=e137]:
+                - columnheader "Customer" [ref=e138]
+                - columnheader "Order" [ref=e139]
+            - rowgroup [ref=e140]:
+              - row [ref=e141]:
+                - cell "Alice" [ref=e142]
+                - cell "O1" [ref=e143]
+              - row [ref=e144]:
+                - cell "Alice" [ref=e145]
+                - cell "O2" [ref=e146]
+              - row [ref=e147]:
+                - cell "Bob" [ref=e148]
+                - cell [ref=e149]:
+                  - strong [ref=e150]: "NULL"
+              - row [ref=e151]:
+                - cell "Chloé" [ref=e152]
+                - cell "O3" [ref=e153]
+      - complementary [ref=e154]:
+        - heading "What to remember" [level=3] [ref=e155]
+        - paragraph [ref=e156]: LEFT preserves Bob with NULL order values; INNER excludes him. Both produce two rows for Alice because she has two matching orders.
+    - generic [ref=e157]: Explore at your pace. Every step works as a still picture.
+```

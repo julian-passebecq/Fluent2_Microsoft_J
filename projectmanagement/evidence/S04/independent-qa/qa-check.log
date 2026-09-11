@@ -1,0 +1,33 @@
+$ pnpm run typecheck && pnpm run validate && pnpm test && pnpm run build && pnpm run test:browser
+$ tsc --noEmit
+$ tsx scripts/validate-content.ts
+Content validation passed: { visuals: 4, variants: 8, frames: 76 }
+$ vitest run
+
+ RUN  v5.0.0 D:/PROJ/Fluent2_S04_QA_7ff24f0
+
+ ❯ tests/s04-independent.test.ts (3 tests | 1 failed) 49ms
+   × L01: rejects a catalog that silently omits a supported lesson 35ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/s04-independent.test.ts > L01: rejects a catalog that silently omits a supported lesson
+AssertionError: expected [Function] to throw an error
+ ❯ tests/s04-independent.test.ts:37:76
+     35|
+     36| it('L01: rejects a catalog that silently omits a supported lesson', ()…
+     37|   expect(()=>validateCatalog(catalog.filter(lesson=>lesson.id!=='group…
+       |                                                                            ^
+     38| });
+     39|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 6 passed (7)
+      Tests  1 failed | 29 passed (30)
+   Start at  21:17:28
+   Duration  11.98s (environment 44%, import 32%, setup 16%, transform 4%, tests 3%)
+
+[ELIFECYCLE] Test failed. See above for more details.
+[ELIFECYCLE] Command failed with exit code 1.

@@ -1,0 +1,184 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: cardinality.spec.ts >> duplicate-key multiplication at 390px
+- Location: tests\browser\cardinality.spec.ts:3:33
+
+# Error details
+
+```
+Test timeout of 30000ms exceeded.
+```
+
+# Page snapshot
+
+```yaml
+- generic [ref=e3]:
+  - link "Skip to concept" [ref=e4] [cursor=pointer]:
+    - /url: "#lesson"
+  - main [ref=e5]:
+    - generic [ref=e6]:
+      - paragraph [ref=e7]: DATAPASS / VISUAL IT CONCEPTS
+      - heading "See the logic." [level=1] [ref=e8]
+      - paragraph [ref=e9]: Small examples. Visible state. Understand what changes—and why.
+    - navigation "Choose a concept" [ref=e10]:
+      - button "SQL joins" [pressed] [ref=e11]
+      - button "Bubble sort" [ref=e12]
+      - button "Retry & blocked downstream" [ref=e13]
+    - article [ref=e14]:
+      - generic [ref=e15]:
+        - paragraph [ref=e16]: SQL & TABLES
+        - heading "SQL joins" [level=2] [ref=e17]
+        - paragraph [ref=e18]: What happens when a customer has no orders?
+        - paragraph [ref=e19]: Switch between LEFT and INNER at the same step. Watch what changes for Bob, who has no orders.
+      - generic [ref=e20]:
+        - group "Compare join types" [ref=e21]:
+          - generic [ref=e23] [cursor=pointer]:
+            - radio "LEFT JOIN" [checked] [active] [ref=e24]
+            - text: LEFT JOIN
+          - generic [ref=e25] [cursor=pointer]:
+            - radio "INNER JOIN" [ref=e26]
+            - text: INNER JOIN
+        - group "Customer keys" [ref=e27]:
+          - generic [ref=e29] [cursor=pointer]:
+            - radio "Unique keys" [ref=e30]
+            - text: Unique keys
+          - generic [ref=e31] [cursor=pointer]:
+            - radio "Duplicate C1 key" [checked] [ref=e32]
+            - text: Duplicate C1 key
+        - paragraph [ref=e33]: Two C1 records × two C1 orders = four pairs. A customer key is not a unique record ID here.
+        - generic "SQL query" [ref=e34]:
+          - code [ref=e35]: SELECT c.name, o."order" FROM Customers c LEFT JOIN Orders o ON c.customer = o.customer
+      - generic [ref=e36]:
+        - generic "Visual playback" [ref=e37]:
+          - button "Play" [ref=e38]
+          - button "Previous" [ref=e39]
+          - button "Step" [disabled] [ref=e40]
+          - button "Reset" [ref=e41]
+          - generic [ref=e42]: Step 7 of 7
+        - paragraph [ref=e43]: "Six output rows: four C1 pairs, one C3 pair, and Bob’s NULL row. There are still only three input orders."
+        - paragraph [ref=e44]: "Scroll the diagram sideways on smaller screens. Keyboard: focus it and use the arrow keys."
+        - region "Scrollable concept diagram" [ref=e45]:
+          - generic [ref=e47]:
+            - 'img "Customers → matching orders → result 6 output rows · solid links: customer · dashed links: order" [ref=e48]':
+              - generic [ref=e49]:
+                - generic [ref=e50]:
+                  - generic [ref=e51]: Customers → matching orders → result
+                  - generic [ref=e52]: "6 output rows · solid links: customer · dashed links: order"
+                - generic [ref=e53]:
+                  - generic [ref=e54]: LEFT · Customers
+                  - generic [ref=e55]: RIGHT · Orders
+                  - generic [ref=e56]: OUTPUT · LEFT
+                  - group "left source row C1" [ref=e65]:
+                    - generic [ref=e67]: C1 · C1
+                  - group "left source row C1-copy" [ref=e68]:
+                    - generic [ref=e70]: C1-copy · C1
+                  - group "left source row C2" [ref=e71]:
+                    - generic [ref=e73]: C2 · C2
+                  - group "left source row C3" [ref=e74]:
+                    - generic [ref=e76]: C3 · C3
+                  - group "right source row O1" [ref=e77]:
+                    - generic [ref=e79]: O1 · C1
+                  - group "right source row O2" [ref=e80]:
+                    - generic [ref=e82]: O2 · C1
+                  - group "right source row O3" [ref=e83]:
+                    - generic [ref=e85]: O3 · C3
+                  - group "Result row customer-orders:row:left:value:C1:right:value:O1" [ref=e86]:
+                    - generic [ref=e88]: C1 × O1
+                    - generic [ref=e89]: MATCH
+                  - group "Result row customer-orders:row:left:value:C1:right:value:O2" [ref=e90]:
+                    - generic [ref=e92]: C1 × O2
+                    - generic [ref=e93]: MATCH
+                  - group "Result row customer-orders:row:left:value:C1-copy:right:value:O1" [ref=e94]:
+                    - generic [ref=e96]: C1-copy × O1
+                    - generic [ref=e97]: MATCH
+                  - group "Result row customer-orders:row:left:value:C1-copy:right:value:O2" [ref=e98]:
+                    - generic [ref=e100]: C1-copy × O2
+                    - generic [ref=e101]: MATCH
+                  - group "Result row customer-orders:row:left:value:C2:right:none" [ref=e102]:
+                    - generic [ref=e104]: C2 × NULL
+                    - generic [ref=e105]: NULL-EXTENDED
+                  - group "Result row customer-orders:row:left:value:C3:right:value:O3" [ref=e106]:
+                    - generic [ref=e108]: C3 × O3
+                    - generic [ref=e109]: MATCH
+                - generic [ref=e110]: Match keys → preserve every customer
+            - note [ref=e112]: "Six output rows: four C1 pairs, one C3 pair, and Bob’s NULL row. There are still only three input orders."
+        - status [ref=e113]: 6 output rows · 4 of 4 customer records represented · Bob preserved with NULL
+        - generic [ref=e114]:
+          - table "Customers · 4 rows" [ref=e115]:
+            - caption [ref=e116]:
+              - text: Customers
+              - generic [ref=e117]: · 4 rows
+            - rowgroup [ref=e118]:
+              - row [ref=e119]:
+                - columnheader "Customer key" [ref=e120]
+                - columnheader "Name" [ref=e121]
+            - rowgroup [ref=e122]:
+              - row [ref=e123]:
+                - cell "C1" [ref=e124]
+                - cell "Alice" [ref=e125]
+              - row [ref=e126]:
+                - cell "C1" [ref=e127]
+                - cell "Alice (copy)" [ref=e128]
+              - row [ref=e129]:
+                - cell "C2" [ref=e130]
+                - cell "Bob" [ref=e131]
+              - row [ref=e132]:
+                - cell "C3" [ref=e133]
+                - cell "Chloé" [ref=e134]
+          - table "Orders · 3 rows" [ref=e135]:
+            - caption [ref=e136]:
+              - text: Orders
+              - generic [ref=e137]: · 3 rows
+            - rowgroup [ref=e138]:
+              - row [ref=e139]:
+                - columnheader "Order" [ref=e140]
+                - columnheader "Customer key" [ref=e141]
+            - rowgroup [ref=e142]:
+              - row [ref=e143]:
+                - cell "O1" [ref=e144]
+                - cell "C1" [ref=e145]
+              - row [ref=e146]:
+                - cell "O2" [ref=e147]
+                - cell "C1" [ref=e148]
+              - row [ref=e149]:
+                - cell "O3" [ref=e150]
+                - cell "C3" [ref=e151]
+          - table "Joined result · 6 rows" [ref=e152]:
+            - caption [ref=e153]:
+              - text: Joined result
+              - generic [ref=e154]: · 6 rows
+            - rowgroup [ref=e155]:
+              - row [ref=e156]:
+                - columnheader "Customer" [ref=e157]
+                - columnheader "Order" [ref=e158]
+            - rowgroup [ref=e159]:
+              - row [ref=e160]:
+                - cell "Alice" [ref=e161]
+                - cell "O1" [ref=e162]
+              - row [ref=e163]:
+                - cell "Alice" [ref=e164]
+                - cell "O2" [ref=e165]
+              - row [ref=e166]:
+                - cell "Alice (copy)" [ref=e167]
+                - cell "O1" [ref=e168]
+              - row [ref=e169]:
+                - cell "Alice (copy)" [ref=e170]
+                - cell "O2" [ref=e171]
+              - row [ref=e172]:
+                - cell "Bob" [ref=e173]
+                - cell [ref=e174]:
+                  - strong [ref=e175]: "NULL"
+              - row [ref=e176]:
+                - cell "Chloé" [ref=e177]
+                - cell "O3" [ref=e178]
+      - complementary [ref=e179]:
+        - heading "What to remember" [level=3] [ref=e180]
+        - paragraph [ref=e181]: Check key uniqueness before joining. Two records sharing C1 each match two orders, producing four pairs. Counting or summing the joined orders would double-count C1’s orders.
+    - generic [ref=e182]: Explore at your pace. Every step works as a still picture.
+```

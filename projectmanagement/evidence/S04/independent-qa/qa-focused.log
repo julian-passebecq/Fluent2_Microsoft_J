@@ -1,0 +1,39 @@
+
+ RUN  v5.0.0 D:/PROJ/Fluent2_S04_QA_7ff24f0
+
+ ❯ tests/s04-independent.test.ts (4 tests | 2 failed) 38ms
+   × L01: rejects a catalog that silently omits a supported lesson 26ms
+   × L01/G07: validates supplied grouping contributor references, not a fresh fixture 4ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/s04-independent.test.ts > L01: rejects a catalog that silently omits a supported lesson
+AssertionError: expected [Function] to throw an error
+ ❯ tests/s04-independent.test.ts:37:76
+     35|
+     36| it('L01: rejects a catalog that silently omits a supported lesson', ()…
+     37|   expect(()=>validateCatalog(catalog.filter(lesson=>lesson.id!=='group…
+       |                                                                            ^
+     38| });
+     39|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/s04-independent.test.ts > L01/G07: validates supplied grouping contributor references, not a fresh fixture
+AssertionError: expected [Function] to throw an error
+ ❯ tests/s04-independent.test.ts:47:42
+     45|     ? {...lesson,variants:lesson.variants.map(variant=>variant.id==='b…
+     46|     : lesson);
+     47|   expect(()=>validateCatalog(corrupted)).toThrow();
+       |                                          ^
+     48| });
+     49|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 2 passed (4)
+   Start at  21:18:28
+   Duration  3.36s (environment 57%, setup 16%, import 15%, transform 10%, tests 1%)
+
